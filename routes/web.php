@@ -22,13 +22,13 @@ Route::get('/', function () {
 	// 	'exchange' => 'erp_events1'
 	// ]);
 
-	Amqp::publish('routing-key', 'message diepbap Hahaa1' , ['queue' => 'queue-name']);
+	Amqp::publish('routing-trip-erp', 'message diepbap Hahaa12' , ['queue' => 'queue-trip-erp']);
     return view('welcome');
     // echo phpinfo();
 });
 
 Route::get('get-rabbit',function(){
-	Amqp::consume('queue-name', function ($message, $resolver) {
+	Amqp::consume('queue-trip-erp', function ($message, $resolver) {
     		
 	   var_dump($message->body);
 
