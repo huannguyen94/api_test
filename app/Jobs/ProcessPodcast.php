@@ -36,10 +36,10 @@ class ProcessPodcast implements ShouldQueue
     {
        
 
-        $us = new User();
-        $us->name = 'TEST';
-        $us->email = 'test@gmail.com';
-        $us->save();
+        // $us = new User();
+        // $us->name = 'TEST';
+        // $us->email = 'test@gmail.com';
+        // $us->save();
         // Process uploaded user...
     }
 }
