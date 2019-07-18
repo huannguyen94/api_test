@@ -12,7 +12,15 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+
+
 Route::group(['namespace'=>'Api'],function(){
+
+    Route::get('web-hook','WebHookErpController@webHookErp');
+
+
 	Route::group(['middleware' => ['apiToken'] ], function () {
 		Route::get('/rule','ApiTestController@testApi')->name('aaaaa');
 	});
