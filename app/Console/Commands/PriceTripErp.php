@@ -3,11 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Jobs\TripsErpSanJob;
-use Amqp,DB;
+use Amqp;
 
-
-class MQTripErp extends Command
+class PriceTripErp extends Command
 {
     /**
      * The name and signature of the console command.
@@ -40,17 +38,14 @@ class MQTripErp extends Command
      */
     public function handle()
     {
-        Amqp::consume('queue-trip-erp', function ( $message, $resolver){
+        Amqp::consume('queue-trip-erp1111', function ( $message, $resolver){
+
             $routingKey = $message->get('routing_key');
             if($routingKey =='routing-trip-erp'){
-                //\Log::info('activation',['user' => '1111']);
-                $dataJson = $message->body;
-                $data = json_decode($dataJson);
-                $type = $data->type;
-                $arrTrip = $data->payload->trip_id;
-                foreach ($arrTrip as $key => $trip_id) {
-                    dispatch(new TripsErpSanJob($trip_id));
-                }
+                \Log::info('activation',['user' => '222']);
+                // $dataJson = $message->body;
+                // $data = json_decode($dataJson);
+                // $trip_id = 1;
                 // event(new \App\Events\TripErpSanEvent($trip_id));
                 // if(!is_null($data)){
                     

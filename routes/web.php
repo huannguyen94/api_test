@@ -22,12 +22,24 @@ Route::get('/', function () {
 	// 	'exchange' => 'erp_events1'
 	// ]);
 
-	Amqp::publish('routing-trip-erp', 'message diepbap Hahaa12' , ['queue' => 'queue-trip-erp']);
+	Amqp::publish('routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[11071]}}' , ['queue' => 'queue-trip-erp']);
     return view('welcome');
     // echo phpinfo();
 });
 
-Route::get('get-rabbit',function(){
+Route::get('get-queue-san',function(){
+	Amqp::consume('queue-trip-san', function ($message, $resolver) {
+    		
+	   var_dump($message->body);
+
+	   $resolver->acknowledge($message);
+
+	   $resolver->stopWhenProcessed();
+	        
+	});
+});
+
+Route::get('get-queue-erp',function(){
 	Amqp::consume('queue-trip-erp', function ($message, $resolver) {
     		
 	   var_dump($message->body);
