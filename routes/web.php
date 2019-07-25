@@ -15,6 +15,10 @@ use App\Jobs\ProcessPodcast;
 // });
 
 
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
+
 Route::get('test-job','podCastController@testJob');
 
 Route::get('/', function () {
