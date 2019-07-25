@@ -31,7 +31,7 @@ class TripErpSanListen
     {
         $trip_id  = $event->trip_id;
         $data = $this->getTripInfoRepository->getData($trip_id);
-        //\Log::info('data',['user' => $data]);
+        \Log::info('data',['user' => $data]);
         
     }
 }

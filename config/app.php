@@ -177,6 +177,8 @@ return [
 
         Bschmitt\Amqp\AmqpServiceProvider::class,
 
+        Sentry\Laravel\ServiceProvider::class,
+
     ],
 
     /*
@@ -228,6 +230,8 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Amqp' => Bschmitt\Amqp\Facades\Amqp::class,
+
+        'Sentry' => Sentry\Laravel\Facade::class,
 
     ],
 

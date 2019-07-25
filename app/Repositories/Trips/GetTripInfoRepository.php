@@ -122,7 +122,7 @@ class GetTripInfoRepository
         );
         $dataReturnTemp = json_encode($dataReturn);
 
-        //Amqp::publish('routing-trip-san', $dataReturnTemp , ['queue' => 'queue-trip-san']);
+        Amqp::publish('routing-trip-san', $dataReturnTemp , ['queue' => 'queue-trip-san']);
 
         return response()->json($dataReturn);
     }
