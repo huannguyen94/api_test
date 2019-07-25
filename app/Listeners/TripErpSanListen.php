@@ -14,6 +14,8 @@ class TripErpSanListen
      *
      * @return void
      */
+    protected $GetTripInfoRepository;
+
     public function __construct(GetTripInfoRepository $GetTripInfoRepository)
     {
         $this->getTripInfoRepository = $GetTripInfoRepository;
@@ -27,9 +29,9 @@ class TripErpSanListen
      */
     public function handle(TripErpSanEvent $event)
     {
-        $data = $this->getTripInfoRepository->getTrip();
-        \Log::info('data',['user' => $data]);
         $trip_id  = $event->trip_id;
+        $data = $this->getTripInfoRepository->getData($trip_id);
+        //\Log::info('data',['user' => $data]);
         
     }
 }

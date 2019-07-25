@@ -19,6 +19,10 @@ class TripsErpSanJob implements ShouldQueue
      *
      * @return void
      */
+    public $tries = 3;
+
+    protected $trip_id;
+
     public function __construct($trip_id)
     {
         //\Log::info('activation',['user' => $trip_id]);
@@ -32,6 +36,7 @@ class TripsErpSanJob implements ShouldQueue
      */
     public function handle()
     {
-        event(new \App\Events\TripErpSanEvent($this->trip_id));
+        //\Log::info('activation',['user' => $this->trip_id]);
+       event(new \App\Events\TripErpSanEvent($this->trip_id));
     }
 }

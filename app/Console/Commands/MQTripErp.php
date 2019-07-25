@@ -7,6 +7,8 @@ use App\Jobs\TripsErpSanJob;
 use Amqp,DB;
 
 
+
+
 class MQTripErp extends Command
 {
     /**
@@ -48,14 +50,15 @@ class MQTripErp extends Command
                 $data = json_decode($dataJson);
                 $type = $data->type;
                 $arrTrip = $data->payload->trip_id;
+
+                $resolver->acknowledge($message);
+
+                //$resolver->stopWhenProcessed();
+                
                 foreach ($arrTrip as $key => $trip_id) {
                     dispatch(new TripsErpSanJob($trip_id));
                 }
-                // event(new \App\Events\TripErpSanEvent($trip_id));
-                // if(!is_null($data)){
-                    
-                //      dump($data);
-                // }
+                
                 
             }
         }, [

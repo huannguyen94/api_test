@@ -22,7 +22,7 @@ Route::get('/', function () {
 	// 	'exchange' => 'erp_events1'
 	// ]);
 
-	Amqp::publish('routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[11071]}}' , ['queue' => 'queue-trip-erp']);
+	Amqp::publish('routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[11071,11072]}}' , ['queue' => 'queue-trip-erp']);
     return view('welcome');
     // echo phpinfo();
 });

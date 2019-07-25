@@ -70,7 +70,7 @@ class GetPriceRepository
             $priceMax = $price-$priceConfigMinTemp;
             $priceMin = $price-$priceConfigMaxTemp;
 
-            $arrReturn[]['erp_pricing_info'] = array(
+            $arrReturn[] = array(
                 'erp_from'          =>$point_a,
                 'erp_to'            =>$point_b,
                 'erp_time_run_from' =>0,

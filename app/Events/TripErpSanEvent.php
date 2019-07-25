@@ -24,7 +24,7 @@ class TripErpSanEvent
     public function __construct($trip_id)
     {
         $this->trip_id = $trip_id;
-        //\Log::info('activation',['user' => $trip_id]);
+        \Log::info('activation1',['user' => $this->trip_id]);
     }
 
     /**

@@ -23,6 +23,9 @@ class GetTripInfoRepository
         ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
         ->where('did_id',$trip_id)->first();
 
+        if(is_null($data)){
+            throw new Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+        }
         
         $bvo_id                = $data->did_bvo_id;
         $loai_so_do            = $data->did_loai_so_do;
@@ -31,7 +34,7 @@ class GetTripInfoRepository
         $trip_id               = $data->did_id;
         $not_id                = $data->not_id;
         $not_ma                = $data->not_ma;
-        $did_time_str          = $data->did_time > 0 ? date('d-m-Y',$data->did_time) : 0;
+        $did_time_str          = $data->did_time > 0 ? date('Y-m-d',$data->did_time) : 0;
         $did_gio_xuat_ben_that = $data->did_gio_xuat_ben_that;
         $not_chieu_di          = $data->not_chieu_di == 1 ? "A" : "B";
         $did_status            = $data->did_status;
@@ -73,9 +76,24 @@ class GetTripInfoRepository
                 'erp_parent_place_id' =>$value['erp_parent_place_id'],
 
             );
-
-            $arrTimeTemp[$value['erp_place_id']] = $timeTemp;
             $timeTemp = $timeTemp + $value['erp_time_run'];
+            $arrTimeTemp[$value['erp_place_id']] = $timeTemp;
+            
+        }
+
+        $dataPricingTemp =  array();
+
+        foreach ($dataPricing as $key => $value) {
+            $dataPricingTemp[]['erp_pricing_info']= array(
+                'erp_from'          =>$value['erp_from'],
+                'erp_to'            =>$value['erp_to'],
+                'erp_time_run_from' =>isset($arrTimeTemp[$value['erp_from']]) ? $arrTimeTemp[$value['erp_from']] : 0,
+                'erp_time_run_to'   =>isset($arrTimeTemp[$value['erp_to']]) ? $arrTimeTemp[$value['erp_to']] : 0,
+                'erp_base_price'    =>$value['erp_base_price'],
+                'erp_min_price'     =>($value['erp_min_price'] > $value['erp_base_price']) ?  $value['erp_base_price'] : $value['erp_min_price'],
+                'erp_max_price'     =>($value['erp_max_price'] < $value['erp_base_price']) ? $value['erp_base_price'] : $value['erp_max_price'],
+
+            );
         }
         $dataReturn = array(
             'trip'=> array(
@@ -99,12 +117,12 @@ class GetTripInfoRepository
                 'erp_car_amenities' =>$dataAmenities['amenities'],
                 'erp_car_imgs'      =>$dataAmenities['images'],
                 'journey'           =>$dataJourneyTemp,
-                'pricing'           =>$dataPricing
+                'pricing'           =>$dataPricingTemp
             )
         );
         $dataReturnTemp = json_encode($dataReturn);
 
-        Amqp::publish('routing-trip-san', $dataReturnTemp , ['queue' => 'queue-trip-san']);
+        //Amqp::publish('routing-trip-san', $dataReturnTemp , ['queue' => 'queue-trip-san']);
 
         return response()->json($dataReturn);
     }
