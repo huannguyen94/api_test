@@ -49,6 +49,8 @@ class MQTripErp extends Command
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
                 $type = $data->type;
+
+                $merchant_id = (isset($data->merchant_id) && $data->merchant =='') ? $data->merchant_id : 0;
                 $arrTrip = $data->payload->trip_id;
 
                 $resolver->acknowledge($message);
@@ -56,7 +58,7 @@ class MQTripErp extends Command
                 //$resolver->stopWhenProcessed();
 
                 foreach ($arrTrip as $key => $trip_id) {
-                    dispatch(new TripsErpSanJob($trip_id));
+                    dispatch(new TripsErpSanJob($trip_id,$merchant_id));
                 }
 
 

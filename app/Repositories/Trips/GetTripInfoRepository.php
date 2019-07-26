@@ -16,7 +16,7 @@ class GetTripInfoRepository
 
     }
 
-    public function getData($trip_id){
+    public function getData($trip_id,$merchant_id){
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
@@ -103,7 +103,7 @@ class GetTripInfoRepository
                     'erp_node_id'               =>$not_id,
                     'erp_wayroad_id'            =>$tuy_id,
                     'erp_node_code'             =>$not_ma,
-                    'erp_merchant'              =>$merchant,
+                    'erp_merchant_id'           =>$merchant_id,
                     'erp_start_date'            =>$did_time_str,
                     'erp_start_datetime'        =>$did_time_str .' ' .$did_gio_xuat_ben_that,
                     'erp_total_time'            =>$countTimeTrip,

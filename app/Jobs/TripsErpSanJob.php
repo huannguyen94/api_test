@@ -23,11 +23,13 @@ class TripsErpSanJob implements ShouldQueue
     public $tries = 3;
 
     protected $trip_id;
+    protected $merchant_id;
 
 
-    public function __construct($trip_id)
+    public function __construct($trip_id,$merchant_id)
     {
         $this->trip_id = $trip_id;
+        $this->merchant_id = $merchant_id;
     }
 
     /**
@@ -37,7 +39,7 @@ class TripsErpSanJob implements ShouldQueue
      */
     public function handle(GetTripInfoRepository $getTripInfoRepository)
     {
-        $data = $getTripInfoRepository->getData($this->trip_id);
+        $data = $getTripInfoRepository->getData($this->trip_id,$this->merchant_id);
        //event(new \App\Events\TripErpSanEvent($this->trip_id));
     }
 }
