@@ -33,25 +33,24 @@ Route::get('/', function () {
 
 Route::get('get-queue-san',function(){
 	Amqp::consume('queue-trip-san', function ($message, $resolver) {
-    		
+
 	   var_dump($message->body);
 
 	   $resolver->acknowledge($message);
 
 	   $resolver->stopWhenProcessed();
-	        
+
 	});
 });
 
 Route::get('get-queue-erp',function(){
 	Amqp::consume('queue-trip-erp', function ($message, $resolver) {
-    		
+
 	   var_dump($message->body);
 
 	   $resolver->acknowledge($message);
 
 	   $resolver->stopWhenProcessed();
-	        
+
 	});
 });
-  
