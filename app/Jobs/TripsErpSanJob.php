@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use App\Repositories\Trips\GetTripInfoRepository;
 
 
 
@@ -23,9 +24,9 @@ class TripsErpSanJob implements ShouldQueue
 
     protected $trip_id;
 
+
     public function __construct($trip_id)
     {
-        //\Log::info('activation',['user' => $trip_id]);
         $this->trip_id = $trip_id;
     }
 
@@ -34,9 +35,9 @@ class TripsErpSanJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle()
+    public function handle(GetTripInfoRepository $getTripInfoRepository)
     {
-        //\Log::info('activation',['user' => $this->trip_id]);
-       event(new \App\Events\TripErpSanEvent($this->trip_id));
+        $data = $getTripInfoRepository->getData($this->trip_id);
+       //event(new \App\Events\TripErpSanEvent($this->trip_id));
     }
 }

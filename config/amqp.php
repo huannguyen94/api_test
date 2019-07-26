@@ -23,11 +23,11 @@ return [
             'port'                  => 5672,
             'username'              => 'erpuser',
             'password'              => 'uWHJ6EtmM2ZwB2lU',
-            'vhost'                 => '/',
+            'vhost'                 => 'havazerp',
             'connect_options'       => [],
             'ssl_options'           => [],
 
-            'exchange'              => 'amq.topic',
+            'exchange'              => 'trip_events',
             'exchange_type'         => 'topic',
             'exchange_passive'      => false,
             'exchange_durable'      => true,

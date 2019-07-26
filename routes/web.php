@@ -25,8 +25,8 @@ Route::get('/', function () {
 	// Amqp::publish('routing-key', 'diepbap dayr message diepbap1', [
 	// 	'exchange' => 'erp_events1'
 	// ]);
-
-	Amqp::publish('routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['queue' => 'queue-trip-erp']);
+//    Amqp::publish('trip.updated', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['exchange' => 'trip_events', 'vhost' => 'havazerp']);
+	Amqp::publish('routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['queue' => 'queue-trip-erp','exchange' => 'trip_events_erp', 'vhost' => 'havazerp']);
     return view('welcome');
     // echo phpinfo();
 });

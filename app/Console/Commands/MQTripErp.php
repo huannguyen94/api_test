@@ -54,16 +54,17 @@ class MQTripErp extends Command
                 $resolver->acknowledge($message);
 
                 //$resolver->stopWhenProcessed();
-                
+
                 foreach ($arrTrip as $key => $trip_id) {
                     dispatch(new TripsErpSanJob($trip_id));
                 }
-                
-                
+
+
             }
         }, [
-            'exchange' =>'amq.topic',
-            'routing'  =>"queue-trip-erp.*"
+            'exchange' =>'trip_events_erp',
+            'routing'  =>"queue-trip-erp.*",
+            'vhost'    => "havazerp"
         ]);
     }
 }

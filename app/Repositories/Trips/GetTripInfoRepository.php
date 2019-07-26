@@ -6,14 +6,14 @@ use App\Repositories\Journey\GetJourneyRepository;
 use App\Repositories\Trips\CarAmenitiesRepository;
 use App\Repositories\Price\GetPriceRepository;
 
-class GetTripInfoRepository 
+class GetTripInfoRepository
 {
     public function __construct(GetJourneyRepository $GetJourneyRepository, CarAmenitiesRepository $CarAmenitiesRepository, GetPriceRepository $GetPriceRepository)
     {
         $this->getJourneyRepository = $GetJourneyRepository;
         $this->carAmenitiesRepository = $CarAmenitiesRepository;
         $this->getPriceRepository = $GetPriceRepository;
-        
+
     }
 
     public function getData($trip_id){
@@ -26,7 +26,7 @@ class GetTripInfoRepository
         if(is_null($data)){
             throw new Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
         }
-        
+
         $bvo_id                = $data->did_bvo_id;
         $loai_so_do            = $data->did_loai_so_do;
         $did_loai_xe           = $data->did_loai_xe;
@@ -48,16 +48,17 @@ class GetTripInfoRepository
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
 
-        // include 
+        // include
 
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe);
-        
+
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
-        
+
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
         $countSeatFree = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_id',$sdg_khoa_ban_ve)->where('bvv_status',0)->get();
 
+        $merchant = $this->getMerchant();
         $countTimeTrip = 0;
         $dataJourneyTemp = array();
         $timeTemp = 0;
@@ -78,7 +79,7 @@ class GetTripInfoRepository
             );
             $timeTemp = $timeTemp + $value['erp_time_run'];
             $arrTimeTemp[$value['erp_place_id']] = $timeTemp;
-            
+
         }
 
         $dataPricingTemp =  array();
@@ -102,6 +103,7 @@ class GetTripInfoRepository
                     'erp_node_id'               =>$not_id,
                     'erp_wayroad_id'            =>$tuy_id,
                     'erp_node_code'             =>$not_ma,
+                    'erp_merchant'              =>$merchant,
                     'erp_start_date'            =>$did_time_str,
                     'erp_start_datetime'        =>$did_time_str .' ' .$did_gio_xuat_ben_that,
                     'erp_total_time'            =>$countTimeTrip,
@@ -121,11 +123,22 @@ class GetTripInfoRepository
             )
         );
         $dataReturnTemp = json_encode($dataReturn);
+        //\Log::info('activation',['user' => $this->trip_id]);
 
-        Amqp::publish('routing-trip-san', $dataReturnTemp , ['queue' => 'queue-trip-san']);
+        Amqp::publish('trip.updated', $dataReturnTemp , ['queue' => 'queue-trip-san','vhost'    => 'havazerp','exchange' =>'trip_events']);
 
         return response()->json($dataReturn);
     }
-    
+
+    public  function getMerchant(){
+        $check = DB::table('configuration')->where('con_id',1)->first();
+        $check = Collect($check)->toArray();
+        $con_data      = $check['con_data'];
+        $arrDataConFig = base64_decode($con_data);
+        $arrDataConFig = json_decode($arrDataConFig,true);
+        $con_code = isset($arrDataConFig['con_code']) ? $arrDataConFig['con_code'] : 'Khong_co_du_lieu';
+        return $con_code;
+    }
+
 
 }
