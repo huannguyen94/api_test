@@ -55,7 +55,7 @@ class MQTripErp extends Command
                 $type = $data->type;
 
                     $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
-                    dump($data->merchant_id);
+                   
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
 
@@ -94,7 +94,7 @@ class MQTripErp extends Command
         $arrDataConFig = json_decode($arrDataConFig,true);
         $merchant_id = isset($arrDataConFig['con_merchant_id']) ? $arrDataConFig['con_merchant_id'] : 0;
         $arrReturn = array(
-            'merchant_id'  => "4",
+            'merchant_id'  => $merchant_id,
 
         );
 
