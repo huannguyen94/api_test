@@ -42,31 +42,56 @@ class MQTripErp extends Command
      */
     public function handle()
     {
-        Amqp::consume('queue-trip-erp', function ( $message, $resolver){
+        $dataMerchant = $this->getInfoMerchant();
+        $merchant_id = isset($dataMerchant['merchant_id']) ? $dataMerchant['merchant_id'] : 0;
+        $queue_trip_erp_temp =  $merchant_id.'-queue-trip-erp';
+
+        Amqp::consume("$queue_trip_erp_temp", function ( $message, $resolver) use ($merchant_id){
             $routingKey = $message->get('routing_key');
-            if($routingKey =='routing-trip-erp'){
+            if($routingKey ==$merchant_id.'-routing-trip-erp'){
                 //\Log::info('activation',['user' => '1111']);
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
                 $type = $data->type;
 
-                $merchant_id = (isset($data->merchant_id) && $data->merchant =='') ? $data->merchant_id : 0;
-                $arrTrip = $data->payload->trip_id;
+                $merchant_id_out = (isset($data->merchant_id) && $data->merchant =='') ? $data->merchant_id : 0;
+                if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
+                    $arrTrip = $data->payload->trip_id;
 
-                $resolver->acknowledge($message);
+                    $resolver->acknowledge($message);
 
-                //$resolver->stopWhenProcessed();
+                    //$resolver->stopWhenProcessed();
 
-                foreach ($arrTrip as $key => $trip_id) {
-                    dispatch(new TripsErpSanJob($trip_id,$merchant_id));
+                    foreach ($arrTrip as $key => $trip_id) {
+                        dispatch(new TripsErpSanJob($trip_id,$merchant_id));
+                    }
+                }else{
+                    \Log::error('Lỗi ID nhà xe không hợp lệ');
+                    throw new \Exception('Lỗi ID nhà xe không hợp lệ');
                 }
+
 
 
             }
         }, [
-            'exchange' =>'trip_events_erp',
-            'routing'  =>"queue-trip-erp.*",
+            'exchange' =>$merchant_id.'-trip_events_erp',
+            'routing'  =>$merchant_id."-queue-trip-erp.*",
             'vhost'    => "havazerp"
         ]);
+    }
+    public function getInfoMerchant(){
+
+        $check = DB::table('configuration')->where('con_id',1)->first();
+        $check = Collect($check)->toArray();
+        $con_data      = $check['con_data'];
+        $arrDataConFig = base64_decode($con_data);
+        $arrDataConFig = json_decode($arrDataConFig,true);
+        $merchant_id = isset($arrDataConFig['con_merchant_id']) ? $arrDataConFig['con_merchant_id'] : 0;
+        $arrReturn = array(
+            'merchant_id'  => $merchant_id,
+
+        );
+
+        return $arrReturn;
     }
 }

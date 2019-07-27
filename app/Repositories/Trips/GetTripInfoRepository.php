@@ -100,6 +100,7 @@ class GetTripInfoRepository
             'trip'=> array(
                 'erp_trip_info'=>array(
                     'erp_trip_id'               =>$trip_id,
+                    'erp_node_time'             =>$data->did_gio_xuat_ben,
                     'erp_node_id'               =>$not_id,
                     'erp_wayroad_id'            =>$tuy_id,
                     'erp_node_code'             =>$not_ma,
@@ -125,7 +126,7 @@ class GetTripInfoRepository
         $dataReturnTemp = json_encode($dataReturn);
         //\Log::info('activation',['user' => $this->trip_id]);
 
-        Amqp::publish('trip.updated', $dataReturnTemp , ['queue' => 'queue-trip-san','vhost'    => 'havazerp','exchange' =>'trip_events']);
+        Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
 
         return response()->json($dataReturn);
     }
