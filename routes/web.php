@@ -1,5 +1,6 @@
 <?php
 use App\Jobs\ProcessPodcast;
+use DB;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,11 +23,17 @@ Route::get('/debug-sentry', function () {
 Route::get('test-job','podCastController@testJob');
 
 Route::get('/', function () {
+
+//    $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
+//
+//    return time();
+
+
 	// Amqp::publish('routing-key', 'diepbap dayr message diepbap1', [
 	// 	'exchange' => 'erp_events1'
 	// ]);
 //    Amqp::publish('trip.updated', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['exchange' => 'trip_events', 'vhost' => 'havazerp']);
-	Amqp::publish('1-routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['queue' => '1-queue-trip-erp','exchange' => '1_trip_events_erp', 'vhost' => 'havazerp']);
+	//Amqp::publish('1-routing-trip-erp', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['queue' => '1-queue-trip-erp','exchange' => '1_trip_events_erp', 'vhost' => 'havazerp']);
     return view('welcome');
     // echo phpinfo();
 });

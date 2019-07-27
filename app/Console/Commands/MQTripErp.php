@@ -54,7 +54,7 @@ class MQTripErp extends Command
                 $data = json_decode($dataJson);
                 $type = $data->type;
 
-                $merchant_id_out = (isset($data->merchant_id) && $data->merchant =='') ? $data->merchant_id : 0;
+                    $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id =='') ? $data->merchant_id : 0;
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
 
@@ -78,6 +78,11 @@ class MQTripErp extends Command
             'routing'  =>$merchant_id."-queue-trip-erp.*",
             'vhost'    => "havazerp"
         ]);
+    }
+    public function getAllTrip(){
+        $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
+
+        return $arrTrip;
     }
     public function getInfoMerchant(){
 
