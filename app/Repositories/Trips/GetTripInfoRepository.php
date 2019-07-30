@@ -126,7 +126,7 @@ class GetTripInfoRepository
         $dataReturnTemp = json_encode($dataReturn);
         //\Log::info('activation',['user' => $this->trip_id]);
 
-        Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+            Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
 
         return response()->json($dataReturn);
     }

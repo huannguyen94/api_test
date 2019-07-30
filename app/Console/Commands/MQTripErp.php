@@ -55,14 +55,16 @@ class MQTripErp extends Command
                 $type = $data->type;
 
                     $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
-                   
+
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
 
                     $resolver->acknowledge($message);
 
                     //$resolver->stopWhenProcessed();
-
+                    if($type=='trip.auto.not'){
+                        $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
+                    }
                     foreach ($arrTrip as $key => $trip_id) {
                         dispatch(new TripsErpSanJob($trip_id,$merchant_id));
                     }
