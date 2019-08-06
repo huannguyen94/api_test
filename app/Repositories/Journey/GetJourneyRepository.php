@@ -81,8 +81,8 @@ class GetJourneyRepository
                     'erp_place_id'        =>$value->bex_id,
                     'erp_place_name'      =>$value->bex_ten,
                     'erp_time_run'        =>$value->rod_time_run,
-                    'erp_is_charge'       =>$value->bex_kinh_doanh,
-                    'erp_is_pickup'       =>$value->rod_active,
+                    'erp_is_charge'       =>$value->bex_kinh_doanh > 0 ? true : false,
+                    'erp_is_pickup'       =>$value->rod_active > 0 ? true : false,
                     'erp_parent_place_id' =>$value->bex_parent_id,
 
                 );
@@ -114,7 +114,7 @@ class GetJourneyRepository
                     'erp_place_name'      =>$value->bex_ten,
                     'erp_time_run'        =>$value->tdd_thoi_gian,
                     'erp_order_no'        =>$value->tdd_order,
-                    'erp_is_charge'       =>$value->bex_kinh_doanh ==1 ? true : false, // điểm tính tiền
+                    'erp_is_charge'       =>$value->bex_kinh_doanh > 0 ? true : false, // điểm tính tiền
                     'erp_is_pickup'       =>true,
                     'erp_parent_place_id' =>$value->bex_parent_id,
                 );
