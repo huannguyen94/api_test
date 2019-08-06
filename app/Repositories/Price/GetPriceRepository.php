@@ -113,7 +113,9 @@ class GetPriceRepository
                 ->JOIN('ben_xe','bex_id','=','tdd_bex_id')->where('tdd_tuyen_id',$tuy_id)
                 ->orderBy('tdd_order')->get();
         $arrReturn = array();
+        $totalRow   = 0;
         foreach ($data as $key => $value) {
+            $totalRow++;
             $point_a        = $value->bex_id;
             $bex_kinh_doanh = $value->bex_kinh_doanh;
             $bex_parent_id  = $value->bex_parent_id;
@@ -123,22 +125,27 @@ class GetPriceRepository
             }else{
                 $point_a_temp = $point_a;
             }
+            $count   = 0;
             foreach ($data as $key1 => $value1) {
-                $point_b         = $value1->bex_id;
-                $bex_kinh_doanh1 = $value1->bex_kinh_doanh;
-                $bex_parent_id1  = $value1->bex_parent_id;
-                if($bex_kinh_doanh1 ==0 && $bex_parent_id1 > 0){
-                    $point_b_temp = $bex_parent_id1;
-                }else{
-                    $point_b_temp = $point_b;
-                }
+                $count++;
+                if($totalRow <= $count){
+                    $point_b         = $value1->bex_id;
+                    $bex_kinh_doanh1 = $value1->bex_kinh_doanh;
+                    $bex_parent_id1  = $value1->bex_parent_id;
+                    if($bex_kinh_doanh1 ==0 && $bex_parent_id1 > 0){
+                        $point_b_temp = $bex_parent_id1;
+                    }else{
+                        $point_b_temp = $point_b;
+                    }
 
-                $price = isset($dataPrice[$point_a_temp][$point_b_temp]) ? $dataPrice[$point_a_temp][$point_b_temp] : 0;
-                $arrReturn[] = array(
-                    'point_a' =>$point_a,
-                    'point_b' =>$point_b,
-                    'price'   => $price,
-                );
+                    $price = isset($dataPrice[$point_a_temp][$point_b_temp]) ? $dataPrice[$point_a_temp][$point_b_temp] : 0;
+                    $arrReturn[] = array(
+                        'point_a' =>$point_a,
+                        'point_b' =>$point_b,
+                        'price'   => $price,
+                    );
+                }
+                
             }
         }
         return $arrReturn;
