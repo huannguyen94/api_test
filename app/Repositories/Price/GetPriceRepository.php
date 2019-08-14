@@ -31,7 +31,7 @@ class GetPriceRepository
         
 
         $data = $this->getPriceChild($tuy_id,$not_chieu_di);
-        
+
         
         $arrReturn = array();
         foreach ($data as $key => $value) {
@@ -106,7 +106,7 @@ class GetPriceRepository
 
         $dataPrice   = $this->getPrice();
         
-        $orderBy = 'ASC'
+        $orderBy = 'ASC';
         if($not_chieu_di == 2){
             $orderBy = 'DESC';
         }
