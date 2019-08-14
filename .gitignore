@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /vendor
+/config/amqp.php
 /.idea
 .env
 .phpunit.result.cache
