@@ -42,14 +42,14 @@ class MQTripErp extends Command
      */
     public function handle()
     {
+
         $dataMerchant = $this->getInfoMerchant();
         $merchant_id = isset($dataMerchant['merchant_id']) ? $dataMerchant['merchant_id'] : 0;
         $queue_trip_erp_temp =  $merchant_id.'-queue-trip-erp';
-
         Amqp::consume("$queue_trip_erp_temp", function ( $message, $resolver) use ($merchant_id){
             $routingKey = $message->get('routing_key');
             if($routingKey ==$merchant_id.'-routing-trip-erp'){
-                //\Log::info('activation',['user' => '1111']);
+               // \Log::info('activation',['user' => '1111']);
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
                 $type = $data->type;
@@ -60,7 +60,6 @@ class MQTripErp extends Command
                     $arrTrip = $data->payload->trip_id;
 
                     $resolver->acknowledge($message);
-
                     //$resolver->stopWhenProcessed();
                     if($type=='trip.auto.not'){
                         $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();

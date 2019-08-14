@@ -19,10 +19,10 @@ return [
     'properties' => [
 
         'production' => [
-            'host'                  => '202.134.19.11',
+            'host'                  => '103.63.108.16',
             'port'                  => 5672,
             'username'              => 'erpuser',
-            'password'              => 'uWHJ6EtmM2ZwB2lU',
+            'password'              => 'QVpCzSoPylZ6cj3z',
             'vhost'                 => 'havazerp',
             'connect_options'       => [],
             'ssl_options'           => [],
@@ -51,11 +51,11 @@ return [
             'consumer_nowait'       => false,
             'timeout'               => 0,
             'persistent'            => true,
-
             'qos'                   => false,
             'qos_prefetch_size'     => 0,
             'qos_prefetch_count'    => 1,
             'qos_a_global'          => false
+
         ],
 
     ],
