@@ -12,7 +12,7 @@ class GetPriceRepository
         $this->flexiblePriceRepository = $FlexiblePriceRepository;
     }
  
-    public function getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe){
+    public function getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di){
 
         if($bvo_id){
             $priceConfig =  $this->flexiblePriceRepository->getPirceMinMax($bvo_id,$loai_so_do,$did_loai_xe);
@@ -30,7 +30,7 @@ class GetPriceRepository
         }
         
 
-        $data = $this->getPriceChild($tuy_id);
+        $data = $this->getPriceChild($tuy_id,$not_chieu_di);
         
         
         $arrReturn = array();
@@ -102,16 +102,18 @@ class GetPriceRepository
         }
         return $arrReturn;
     }
-    public function getPriceChild($tuy_id){
+    public function getPriceChild($tuy_id,$not_chieu_di){
 
         $dataPrice   = $this->getPrice();
         
-
-
+        $orderBy = 'ASC'
+        if($not_chieu_di == 2){
+            $orderBy = 'DESC';
+        }
         // $arrParent = $this->getPointParent();
         $data = DB::table('tuyen_diem_don_tra_khach')
                 ->JOIN('ben_xe','bex_id','=','tdd_bex_id')->where('tdd_tuyen_id',$tuy_id)
-                ->orderBy('tdd_order')->get();
+                ->orderBy('tdd_order',$orderBy)->get();
         $arrReturn = array();
         foreach ($data as $key => $value) {
             $point_a        = $value->bex_id;

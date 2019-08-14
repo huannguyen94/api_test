@@ -50,7 +50,7 @@ class GetTripInfoRepository
 
         // include
 
-        $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe);
+        $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
 
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
 
@@ -63,6 +63,7 @@ class GetTripInfoRepository
         $dataJourneyTemp = array();
         $timeTemp = 0;
         $arrTimeTemp = array();
+
         foreach ($dataJourney as $key => $value) {
             $time = $value['erp_time_run'];
             $countTimeTrip = $countTimeTrip + $time;
@@ -83,7 +84,7 @@ class GetTripInfoRepository
         }
 
         $dataPricingTemp =  array();
-
+        \Log::info('activation',['user' => count($dataPricing)]);
         foreach ($dataPricing as $key => $value) {
             $dataPricingTemp[]['erp_pricing_info']= array(
                 'erp_from'          =>$value['erp_from'],

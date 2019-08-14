@@ -33,7 +33,7 @@ Route::get('/', function () {
 	// 	'exchange' => 'erp_events1'
 	// ]);
 //    Amqp::publish('trip.updated', '{"type":"trip.bks","payload":{"trip_id":[38507,38508]}}' , ['exchange' => 'trip_events', 'vhost' => 'havazerp']);
-	Amqp::publish('1-routing-trip-erp', '{"merchant_id":"1","type":"trip.auto.not","payload":{"trip_id":[38507,38508]}}' , ['queue' => '1-queue-trip-erp','exchange' => '1_trip_events_erp', 'vhost' => 'havazerp']);
+	Amqp::publish('1-routing-trip-erp', '{"merchant_id":"1","type":"trip.auto.not","payload":{"trip_id":[305768]}}' , ['queue' => '1-queue-trip-erp','exchange' => '1_trip_events_erp', 'vhost' => 'havazerp']);
     return view('welcome');
     // echo phpinfo();
 });
