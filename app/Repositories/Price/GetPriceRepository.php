@@ -150,6 +150,24 @@ class GetPriceRepository
                 
             }
         }
+
+
+
+        // while(count($data) > 1) {
+        //     $first = array_shift($data);
+
+        //     foreach($data as $item) {
+        //         $price = isset($dataPrice[$point_a_temp][$point_b_temp]) ? $dataPrice[$point_a_temp][$point_b_temp] : 0;
+        //         $arrReturn[] = [
+        //             'from' => $first,
+        //             'to' => $item,
+        //             'point_a' =>$first,
+        //             'point_b' =>$item,
+        //             'price'   => $price,
+        //         ];
+        //     }
+        // }
+
         return $arrReturn;
 
     }

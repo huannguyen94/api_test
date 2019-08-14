@@ -19,7 +19,7 @@ use Illuminate\Http\Request;
 Route::group(['namespace'=>'Api'],function(){
 
 	
-    Route::get('web-hook','WebHookErpController@webHookErp');
+    Route::get('web-hook/{id}','WebHookErpController@webHookErp');
 
 
 	Route::group(['middleware' => ['apiToken'] ], function () {

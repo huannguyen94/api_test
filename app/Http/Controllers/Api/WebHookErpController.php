@@ -15,9 +15,9 @@ class WebHookErpController extends Controller
 		$this->getTripInfoRepository = $GetTripInfoRepository;
 		$this->getJourneyRepository = $GetJourneyRepository;
 	}
-    public function webHookErp( Request $request){
+    public function webHookErp( Request $request,$id){
 
-        $data = $this->getTripInfoRepository->getData(35453,1);
+        $data = $this->getTripInfoRepository->getData($id,1);
         return $data;
     }
 }
