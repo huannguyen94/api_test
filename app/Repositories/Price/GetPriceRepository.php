@@ -106,6 +106,7 @@ class GetPriceRepository
     public function getPriceChild($tuy_id,$not_chieu_di){
 
         $dataPrice   = $this->getPrice();
+        dd($dataPrice);
         $orderBy = 'ASC';
         if($not_chieu_di == 2){
             $orderBy = 'DESC';
