@@ -36,7 +36,8 @@ class GetTripInfoRepository
         $not_ma                = $data->not_ma;
         $did_time_str          = $data->did_time > 0 ? date('Y-m-d',$data->did_time) : 0;
         $did_gio_xuat_ben_that = $data->did_gio_xuat_ben_that;
-        $not_chieu_di          = $data->not_chieu_di == 1 ? "A" : "B";
+        $not_chieu_di          = $data->not_chieu_di;
+        $not_chieu_di_text     = $data->not_chieu_di == 1 ? "A" : "B";
         $did_status            = $data->did_status;
         $bvl_id                = $data->bvl_id;
         $bvl_name              = $data->bvl_name;
@@ -50,7 +51,6 @@ class GetTripInfoRepository
 
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
-
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
 
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
@@ -106,7 +106,7 @@ class GetTripInfoRepository
                     'erp_start_date'            =>$did_time_str,
                     'erp_start_datetime'        =>$did_time_str .' ' .$did_gio_xuat_ben_that,
                     'erp_total_time'            =>$countTimeTrip,
-                    'erp_trip_direction'        =>$not_chieu_di,
+                    'erp_trip_direction'        =>$not_chieu_di_text,
                     'erp_car_level_id'          =>$bvl_id,
                     'erp_car_level_name'        =>$bvl_name,
                     'erp_car_type_id'           =>$sdg_id,
