@@ -88,7 +88,7 @@ class GetPriceRepository
     public function getPrice(){
         $did_loai_xe = 1;
         $tuy_id      = 1;
-
+        var_dump($did_loai_xe,$tuy_id);
         $dataGiaVe     = DB::table('ban_ve_gia')->where('bvg_type',$did_loai_xe)->where('bvg_tuyen_id',$tuy_id)->get();
         $arrReturn     = array();
 
