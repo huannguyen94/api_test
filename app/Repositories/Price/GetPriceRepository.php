@@ -98,6 +98,7 @@ class GetPriceRepository
             $price   = $value->bvg_bvd_id;
 
             $arrReturn[$point_a][$point_b] = $price;
+            $arrReturn[$point_b][$point_a] = $price;
 
         }
         return $arrReturn;
