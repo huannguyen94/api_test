@@ -30,7 +30,7 @@ class GetPriceRepository
         }
         
 
-        $data = $this->getPriceChild($tuy_id,$not_chieu_di);
+        $data = $this->getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe);
 
         
         $arrReturn = array();
@@ -85,10 +85,8 @@ class GetPriceRepository
 
     }
 
-    public function getPrice(){
-        $did_loai_xe = 1;
-        $tuy_id      = 1;
-        var_dump($did_loai_xe,$tuy_id);
+    public function getPrice($tuy_id,$did_loai_xe){
+       
         $dataGiaVe     = DB::table('ban_ve_gia')->where('bvg_type',$did_loai_xe)->where('bvg_tuyen_id',$tuy_id)->get();
         $arrReturn     = array();
 
@@ -103,10 +101,9 @@ class GetPriceRepository
         }
         return $arrReturn;
     }
-    public function getPriceChild($tuy_id,$not_chieu_di){
+    public function getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe){
 
-        $dataPrice   = $this->getPrice();
-        dd($dataPrice);
+        $dataPrice   = $this->getPrice($tuy_id,$did_loai_xe);
         $orderBy = 'ASC';
         if($not_chieu_di == 2){
             $orderBy = 'DESC';
