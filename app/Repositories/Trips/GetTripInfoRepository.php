@@ -43,8 +43,7 @@ class GetTripInfoRepository
         $bvl_name              = $data->bvl_name;
         $sdg_id                = $data->sdg_id;
         $sdg_name              = $data->sdg_name;
-        $sdg_so_cho_tong       = $data->sdg_so_cho_tong;
-        $sdg_so_cho_tong       = $data->sdg_so_cho_tong;
+        $sdg_so_cho       = $data->sdg_so_cho;
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
@@ -55,7 +54,7 @@ class GetTripInfoRepository
 
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
-        $countSeatFree = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_id',$sdg_khoa_ban_ve)->where('bvv_status',0)->get();
+        $countSeatFree = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_number',$sdg_khoa_ban_ve)->where('bvv_status',0)->get();
 
         $merchant = $this->getMerchant();
         $countTimeTrip = 0;
@@ -112,7 +111,7 @@ class GetTripInfoRepository
                     'erp_car_type_id'           =>$sdg_id,
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
-                    'erp_trip_total_seats'      =>$sdg_so_cho_tong,
+                    'erp_trip_total_seats'      =>$sdg_so_cho,
                     'erp_trip_total_free_seats' =>count($countSeatFree),
                 ),
                 'erp_car_amenities' =>$dataAmenities['amenities'],
