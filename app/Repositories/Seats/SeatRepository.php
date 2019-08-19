@@ -21,8 +21,8 @@ class SeatRepository
         if(is_null($data)){
             throw new Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
         }
-        $sdg_so_cho_san  = $data->sdg_so_cho_san;
-        $sdg_khoa_ban_ve = explode(',',$sdg_so_cho_san);
+        $sdg_khoa_ban_ve  = $data->sdg_khoa_ban_ve;
+        $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve);
 
         $dataVe = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
                 ->where('bvv_status',0)->count();
