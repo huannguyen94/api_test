@@ -55,7 +55,7 @@ class GetTripInfoRepository
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
         $countSeatFree = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_number',$sdg_khoa_ban_ve)->where('bvv_status',0)->get();
-
+        dd($trip_id,$sdg_khoa_ban_ve,$countSeatFree);
         $merchant = $this->getMerchant();
         $countTimeTrip = 0;
         $dataJourneyTemp = array();
