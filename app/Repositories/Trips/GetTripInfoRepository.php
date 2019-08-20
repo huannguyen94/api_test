@@ -54,8 +54,15 @@ class GetTripInfoRepository
 
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
-        $countSeatFree = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_number',$sdg_khoa_ban_ve)->where('bvv_status',0)->get();
-    
+        $countSeatFree = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
+                        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
+                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
+                        ->where('sdgct_san',0)
+                        ->where('bvv_bvn_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->count();
+
         $merchant = $this->getMerchant();
         $countTimeTrip = 0;
         $dataJourneyTemp = array();
@@ -112,7 +119,7 @@ class GetTripInfoRepository
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
                     'erp_trip_total_seats'      =>$sdg_so_cho,
-                    'erp_trip_total_free_seats' =>count($countSeatFree),
+                    'erp_trip_total_free_seats' =>$countSeatFree,
                 ),
                 'erp_car_amenities' =>$dataAmenities['amenities'],
                 'erp_car_imgs'      =>$dataAmenities['images'],

@@ -24,7 +24,13 @@ class SeatRepository
         $sdg_khoa_ban_ve  = $data->sdg_khoa_ban_ve;
         $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve);
 
-        $dataVe = DB::table('ban_ve_ve')->where('bvv_bvn_id',$trip_id)->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+        $dataVe = DB::table('ban_ve_ve')
+                ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
+                ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
+                ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
+                ->where('sdgct_san',0)
+                ->where('bvv_bvn_id',$trip_id)
+                ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
                 ->where('bvv_status',0)->count();
         $tongve  = $data->sdg_so_cho;
         $veTrong = $dataVe;
