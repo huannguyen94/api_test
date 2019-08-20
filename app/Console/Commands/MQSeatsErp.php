@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use App\Jobs\TripsErpSanJob;
 use Amqp,DB;
+use Exception;
 use App\Repositories\Seats\SeatRepository;
 
 
