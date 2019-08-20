@@ -5,6 +5,7 @@ use DB,Amqp;
 use App\Repositories\Journey\GetJourneyRepository;
 use App\Repositories\Trips\CarAmenitiesRepository;
 use App\Repositories\Price\GetPriceRepository;
+use Exception;
 
 class GetTripInfoRepository
 {
@@ -24,7 +25,7 @@ class GetTripInfoRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-            throw new Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+            throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
         }
 
         $bvo_id                = $data->did_bvo_id;

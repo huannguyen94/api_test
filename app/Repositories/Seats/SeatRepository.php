@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Seats;
 use DB,Amqp;
-
+use Exception;
 
 class SeatRepository
 {
@@ -19,7 +19,7 @@ class SeatRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-            throw new Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+            throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
         }
         $sdg_khoa_ban_ve  = $data->sdg_khoa_ban_ve;
         $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve);
