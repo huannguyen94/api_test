@@ -176,7 +176,7 @@ class GetTripInfoRepository
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
 
-            $countFreeSeat = $sdg_so_cho - $soGheSan - count($sdg_khoa_ban_ve);
+            $countFreeSeat = $sdg_so_cho - $soGheSan - $countTemp;
         }
         
 
