@@ -77,8 +77,8 @@ class GetTripInfoRepository
                         ->where('sdgct_san',0)
                         ->where('bvv_bvn_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status',0)->count();
-                        
+                        ->where('bvv_status',0)->get();
+
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
@@ -144,7 +144,7 @@ class GetTripInfoRepository
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
                     'erp_trip_total_seats'      =>$sdg_so_cho,
-                    'erp_trip_total_free_seats' =>$countSeatFree,
+                    'erp_trip_total_free_seats' =>count($countSeatFree),
                 ),
                 'erp_car_amenities' =>$dataAmenities['amenities'],
                 'erp_car_imgs'      =>$dataAmenities['images'],
