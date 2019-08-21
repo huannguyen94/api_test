@@ -49,9 +49,24 @@ class GetTripInfoRepository
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
-        if($did_status != 1){
-            return 0;
+        if($did_status !=1){
+           $dataReturn = array(
+                'trip'=> array(
+                    'erp_trip_info'=>array(
+                        'erp_trip_id'               =>$trip_id,
+                        'erp_node_time'             =>$data->did_gio_xuat_ben,
+                        'erp_wayroad_id'            =>$tuy_id,
+                        'erp_node_code'             =>$not_ma,
+                        'erp_merchant_id'           =>$merchant_id,
+                        'erp_trip_staus'            =>$did_status,
+                    ),
+                    
+                )
+            );
+            $dataReturnTemp = json_encode($dataReturn);
+            Amqp::publish('trip.delete', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
         }
+
 
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
@@ -136,39 +151,43 @@ class GetTripInfoRepository
         return response()->json($dataReturn);
     }
     public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do){
-        $countFreeSeatTemp = DB::table('ban_ve_ve')
+
+        $check = $countFreeSeatTemp = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->where('did_id',$trip_id)->count();
+        if($check > 0){
+            $countFreeSeatTemp = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
                         ->where('bvv_status',0)->count();
-        $soGheSan = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-        $countFreeSeat = $countFreeSeatTemp;
-        // $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
 
+            $soGheSan = DB::table('so_do_giuong_chi_tiet')
+                     ->join('ban_ve_ve','sdgct_number','=','bvv_number')
+                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
+            $countFreeSeat = $countFreeSeatTemp;
 
-
-        $countFreeSeatTempSql = DB::table('ban_ve_ve')
-                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
-                        ->where('did_id',$trip_id)
-                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status',0)->toSql();
-
-
-        $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
-
-        if($countFreeSeat <= 0 && $trip_id ==333790){
-            $dataLog = array(
-                'countFreeSeat'        =>$countFreeSeat,
-                'soGheSan'             =>$soGheSan,
-                'trip_id'              =>$trip_id,
-                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
-                'loai_so_do'           =>$loai_so_do,
-                'countFreeSeatTempSql' =>$countFreeSeatTempSql,
-                'soGheSanSql'          =>$soGheSanSql,
-
-            );
-            \Log::info('activation',['trip' => $dataLog]);
+            $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+        }else{
+            $countFreeSeat = 28;
         }
+        
+
+
+
+        // if($countFreeSeat <= 0 && $trip_id ==333790){
+        //     $dataLog = array(
+        //         'countFreeSeat'        =>$countFreeSeat,
+        //         'soGheSan'             =>$soGheSan,
+        //         'trip_id'              =>$trip_id,
+        //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+        //         'loai_so_do'           =>$loai_so_do,
+        //         'countFreeSeatTempSql' =>$countFreeSeatTempSql,
+        //         'soGheSanSql'          =>$soGheSanSql,
+
+        //     );
+        //     \Log::info('activation',['trip' => $dataLog]);
+        // }
         
         return $countFreeSeat;
     }
