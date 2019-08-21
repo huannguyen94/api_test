@@ -28,7 +28,7 @@ class TripsErpSanJob implements ShouldQueue
 
     public function __construct($trip_id,$merchant_id)
     {
-        $this->trip_id = $trip_id;
+        $this->trip_id     = $trip_id;
         $this->merchant_id = $merchant_id;
     }
 
