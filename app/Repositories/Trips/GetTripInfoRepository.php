@@ -128,8 +128,13 @@ class GetTripInfoRepository
                 'pricing'           =>$dataPricingTemp
             )
         );
+        $dataLog = array(
+            'erp_trip_id'               =>$trip_id,
+            'erp_trip_total_seats'      =>$sdg_so_cho,
+            'erp_trip_total_free_seats' =>$countSeatFree,
+        );
         $dataReturnTemp = json_encode($dataReturn);
-        //\Log::info('activation',['user' => $this->trip_id]);
+        \Log::info('activation',['user' => $dataLog]);
 
             Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
 
