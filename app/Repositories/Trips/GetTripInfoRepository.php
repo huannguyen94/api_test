@@ -49,6 +49,23 @@ class GetTripInfoRepository
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
+        if($did_status !=1){
+            $dataReturn = array(
+                'trip'=> array(
+                    'erp_trip_info'=>array(
+                        'erp_trip_id'               =>$trip_id,
+                        'erp_node_time'             =>$data->did_gio_xuat_ben,
+                        'erp_wayroad_id'            =>$tuy_id,
+                        'erp_node_code'             =>$not_ma,
+                        'erp_merchant_id'           =>$merchant_id,
+                        'erp_trip_staus'            =>$did_status,
+                    ),
+                    
+                )
+            );
+            Amqp::publish('trip.delete', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+        }
+
 
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
