@@ -151,12 +151,27 @@ class GetTripInfoRepository
                 'pricing'           =>$dataPricingTemp
             )
         );
+
+        $countSeatFreeSql = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
+                        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
+                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
+                        ->where('sdgct_san',0)
+                        ->where('bvv_bvn_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->toSql();
+
         $dataLog = array(
             'erp_trip_id'               =>$trip_id,
             'erp_trip_total_seats'      =>$sdg_so_cho,
             'erp_trip_total_free_seats' =>$countSeatFree,
+            'countSeatFreeSql'          =>$countSeatFreeSql,
+            'sdg_khoa_ban_ve'           =>$sdg_khoa_ban_ve,
         );
         $dataReturnTemp = json_encode($dataReturn);
+
+        
+
         \Log::info('activation',['user' => $dataLog]);
 
         Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
