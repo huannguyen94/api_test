@@ -154,7 +154,7 @@ class GetTripInfoRepository
 
         $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
 
-        if($countFreeSeat == 0){
+        if($countFreeSeat <= 0){
             \DB::listen();
             $dataLog = array(
                 'countFreeSeat'   =>$countFreeSeat,
