@@ -64,6 +64,7 @@ class GetTripInfoRepository
                 )
             );
             Amqp::publish('trip.delete', $dataReturn , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+            return $dataReturn;
         }
 
 
