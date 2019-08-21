@@ -140,7 +140,7 @@ class GetTripInfoRepository
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
                         ->where('bvv_status',0)->count();
         $soGheSan = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-        $countFreeSeat = $countFreeSeatTemp - $soGheSan;
+        $countFreeSeat = $countFreeSeatTemp;
         // $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
 
 
