@@ -11,6 +11,50 @@ class SeatRepository
 
     }
 
+    public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho){
+
+        $check = $countFreeSeatTemp = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->where('did_id',$trip_id)->count();
+        if($check > 0){
+            $countFreeSeatTemp = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->where('did_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->count();
+
+            $soGheSan = DB::table('so_do_giuong_chi_tiet')
+                     ->join('ban_ve_ve','sdgct_number','=','bvv_number')
+                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
+            $countFreeSeat = $countFreeSeatTemp;
+
+            $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+        }else{
+            $soGheSan = DB::table('so_do_giuong_chi_tiet')
+                     ->join('ban_ve_ve','sdgct_number','=','bvv_number')
+                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
+            $countFreeSeat = $sdg_so_cho - $soGheSan - count($sdg_khoa_ban_ve);
+        }
+        
+
+
+
+        // if($countFreeSeat <= 0 && $trip_id ==333790){
+        //     $dataLog = array(
+        //         'countFreeSeat'        =>$countFreeSeat,
+        //         'soGheSan'             =>$soGheSan,
+        //         'trip_id'              =>$trip_id,
+        //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+        //         'loai_so_do'           =>$loai_so_do,
+        //         'countFreeSeatTempSql' =>$countFreeSeatTempSql,
+        //         'soGheSanSql'          =>$soGheSanSql,
+
+        //     );
+        //     \Log::info('activation',['trip' => $dataLog]);
+        // }
+        $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+        return $countFreeSeat;
+    }
     public function getData($trip_id,$merchant_id){
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
@@ -24,16 +68,7 @@ class SeatRepository
         $sdg_khoa_ban_ve  = $data->sdg_khoa_ban_ve;
         $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve);
 
-        $dataVe = DB::table('ban_ve_ve')
-                ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
-                ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
-                ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
-                ->where('sdgct_san',0)
-                ->where('bvv_bvn_id',$trip_id)
-                ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                ->where('bvv_status',0)->count();
         $tongve  = $data->sdg_so_cho;
-        $veTrong = $dataVe;
 
 
         $tuy_id                = $data->not_tuy_id;
@@ -45,7 +80,9 @@ class SeatRepository
         $sdg_id                = $data->sdg_id;
         $sdg_name              = $data->sdg_name;
         $did_not_option_id     = $data->did_not_option_id;
+        $loai_so_do            = $data->did_loai_so_do;
 
+        $countFreeSeat = $this->getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$tongve);
         $dataReturn = array(
             'trip'=> array(
                 'erp_trip_info'=>array(
@@ -61,7 +98,7 @@ class SeatRepository
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
                     'erp_trip_total_seats'      =>$tongve,
-                    'erp_trip_total_free_seats' =>$veTrong,
+                    'erp_trip_total_free_seats' =>$countFreeSeat,
                 ),
                 
             )
