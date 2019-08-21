@@ -143,13 +143,27 @@ class GetTripInfoRepository
         $countFreeSeat = $countFreeSeatTemp - $soGheSan;
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
 
-        $dataLog = array(
-            'countFreeSeat'        =>$countFreeSeat,
-            'trip_id'              =>$trip_id,
-            'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
 
-        );
-        \Log::info('activation',['trip' => $dataLog]);
+        $countFreeSeatTempSql = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->where('did_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->toSql();
+        $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
+
+        if($countFreeSeat == 0){
+            $dataLog = array(
+                'countFreeSeat'        =>$countFreeSeat,
+                'trip_id'              =>$trip_id,
+                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+                'countFreeSeatTempSql' =>$countFreeSeatTempSql,
+                'soGheSanSql'          =>$soGheSanSql,
+                'loai_so_do'           =>$loai_so_do,
+
+            );
+            \Log::info('activation',['trip' => $dataLog]);
+        }
+        
         return $countFreeSeat;
     }
     public  function getMerchant(){
