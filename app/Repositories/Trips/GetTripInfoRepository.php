@@ -6,7 +6,6 @@ use App\Repositories\Journey\GetJourneyRepository;
 use App\Repositories\Trips\CarAmenitiesRepository;
 use App\Repositories\Price\GetPriceRepository;
 use Exception;
-
 class GetTripInfoRepository
 {
     public function __construct(GetJourneyRepository $GetJourneyRepository, CarAmenitiesRepository $CarAmenitiesRepository, GetPriceRepository $GetPriceRepository)
@@ -18,7 +17,6 @@ class GetTripInfoRepository
     }
 
     public function getData($trip_id,$merchant_id){
-       
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
@@ -26,9 +24,7 @@ class GetTripInfoRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-          
             throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
-            return '';
         }
 
         $bvo_id                = $data->did_bvo_id;
@@ -47,37 +43,10 @@ class GetTripInfoRepository
         $bvl_name              = $data->bvl_name;
         $sdg_id                = $data->sdg_id;
         $sdg_name              = $data->sdg_name;
-        $sdg_so_cho            = $data->sdg_so_cho;
+        $sdg_so_cho       = $data->sdg_so_cho;
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
-        if($did_status !=1){
-            $dataReturn = array(
-                'trip'=> array(
-                    'erp_trip_info'=>array(
-                        'erp_trip_id'               =>$trip_id,
-                        'erp_node_time'             =>$data->did_gio_xuat_ben,
-                        'erp_wayroad_id'            =>$tuy_id,
-                        'erp_node_code'             =>$not_ma,
-                        'erp_merchant_id'           =>$merchant_id,
-                        'erp_trip_staus'            =>$did_status,
-                    ),
-                    
-                )
-            );
-            $dataReturnTemp = json_encode($dataReturn);
-            //Amqp::publish('trip.delete', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
-            return $dataReturnTemp;
-        }
-
-        $countSeatFree = DB::table('ban_ve_ve')
-                        ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
-                        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
-                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
-                        ->where('sdgct_san',0)
-                        ->where('bvv_bvn_id',$trip_id)
-                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status',0)->get();
 
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
@@ -88,7 +57,6 @@ class GetTripInfoRepository
         
 
         $merchant = $this->getMerchant();
-
         $countTimeTrip = 0;
         $dataJourneyTemp = array();
         $timeTemp = 0;
@@ -125,6 +93,7 @@ class GetTripInfoRepository
 
             );
         }
+        $countFreeSeat = $this->getCountFreeSeat($trip_id,$sdg_khoa_ban_ve);
         $dataReturn = array(
             'trip'=> array(
                 'erp_trip_info'=>array(
@@ -144,7 +113,7 @@ class GetTripInfoRepository
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
                     'erp_trip_total_seats'      =>$sdg_so_cho,
-                    'erp_trip_total_free_seats' =>count($countSeatFree),
+                    'erp_trip_total_free_seats' =>$countFreeSeat,
                 ),
                 'erp_car_amenities' =>$dataAmenities['amenities'],
                 'erp_car_imgs'      =>$dataAmenities['images'],
@@ -152,34 +121,30 @@ class GetTripInfoRepository
                 'pricing'           =>$dataPricingTemp
             )
         );
+        $dataReturnTemp = json_encode($dataReturn);
+        //\Log::info('activation',['user' => $this->trip_id]);
 
-        $countSeatFreeSql = DB::table('ban_ve_ve')
+            Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+
+        return response()->json($dataReturn);
+    }
+    public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve){
+        $countFreeSeat = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
                         ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
                         ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
                         ->where('sdgct_san',0)
                         ->where('bvv_bvn_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status',0)->toSql();
-
+                        ->where('bvv_status',0)->count();
         $dataLog = array(
-            'erp_trip_id'               =>$trip_id,
-            'erp_trip_total_seats'      =>$sdg_so_cho,
-            'erp_trip_total_free_seats' =>$countSeatFree,
-            'countSeatFreeSql'          =>$countSeatFreeSql,
-            'sdg_khoa_ban_ve'           =>$sdg_khoa_ban_ve,
+            'countFreeSeat'   =>$countFreeSeat,
+            'trip_id'         =>$trip_id,
+            'sdg_khoa_ban_ve' =>$sdg_khoa_ban_ve,
         );
-        $dataReturnTemp = json_encode($dataReturn);
-
-        
-
-        \Log::info('activation',['user' => $dataLog]);
-
-        Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
-
-        return response()->json($dataReturn);
+        \Log::info('activation',['trip' => $dataLog]);
+        return $countFreeSeat;
     }
-
     public  function getMerchant(){
         $check = DB::table('configuration')->where('con_id',1)->first();
         $check = Collect($check)->toArray();
