@@ -24,9 +24,10 @@ class GetTripInfoRepository
         ->leftjoin('so_do_giuong','did_loai_so_do','=','sdg_id')
         ->where('did_id',$trip_id)->first();
 
-        // if(is_null($data)){
-        //     throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
-        // }
+        if(is_null($data)){
+            throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+            return '';
+        }
 
         $bvo_id                = $data->did_bvo_id;
         $loai_so_do            = $data->did_loai_so_do;
@@ -44,7 +45,7 @@ class GetTripInfoRepository
         $bvl_name              = $data->bvl_name;
         $sdg_id                = $data->sdg_id;
         $sdg_name              = $data->sdg_name;
-        $sdg_so_cho       = $data->sdg_so_cho;
+        $sdg_so_cho            = $data->sdg_so_cho;
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 
