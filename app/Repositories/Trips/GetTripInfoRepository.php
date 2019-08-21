@@ -165,9 +165,8 @@ class GetTripInfoRepository
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $countFreeSeatTemp;
+            $countFreeSeat = $countFreeSeatTemp -$soGheSan;
 
-            $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
         }else{
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
@@ -178,18 +177,18 @@ class GetTripInfoRepository
 
 
 
-        if($trip_id ==316275){
-            $dataLog = array(
-                'countFreeSeat'        =>$countFreeSeat,
-                'soGheSan'             =>$soGheSan,
-                'trip_id'              =>$trip_id,
-                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
-                'loai_so_do'           =>$loai_so_do,
+        // if($trip_id ==316275){
+        //     $dataLog = array(
+        //         'countFreeSeat'        =>$countFreeSeat,
+        //         'soGheSan'             =>$soGheSan,
+        //         'trip_id'              =>$trip_id,
+        //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+        //         'loai_so_do'           =>$loai_so_do,
               
 
-            );
-            \Log::info('activation',['trip' => $dataLog]);
-        }
+        //     );
+        //     \Log::info('activation',['trip' => $dataLog]);
+        // }
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
         return $countFreeSeat;
     }
