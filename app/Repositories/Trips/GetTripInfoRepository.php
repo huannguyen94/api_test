@@ -126,6 +126,8 @@ class GetTripInfoRepository
                 'pricing'           =>$dataPricingTemp
             )
         );
+
+
         $dataReturnTemp = json_encode($dataReturn);
         //\Log::info('activation',['user' => $this->trip_id]);
 
@@ -154,13 +156,15 @@ class GetTripInfoRepository
 
         $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
 
-        if($countFreeSeat <= 0){
+        if($countFreeSeat <= 0 && $trip_id ==310731){
             $dataLog = array(
-                'countFreeSeat'   =>$countFreeSeat,
-                'soGheSan'        =>$soGheSan,
-                'trip_id'         =>$trip_id,
-                'sdg_khoa_ban_ve' =>$sdg_khoa_ban_ve,
-                'loai_so_do'      =>$loai_so_do,
+                'countFreeSeat'        =>$countFreeSeat,
+                'soGheSan'             =>$soGheSan,
+                'trip_id'              =>$trip_id,
+                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+                'loai_so_do'           =>$loai_so_do,
+                'countFreeSeatTempSql' =>$countFreeSeatTempSql,
+                'soGheSanSql'          =>$soGheSanSql,
 
             );
             \Log::info('activation',['trip' => $dataLog]);
