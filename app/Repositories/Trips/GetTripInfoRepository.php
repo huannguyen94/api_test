@@ -130,9 +130,9 @@ class GetTripInfoRepository
     }
     public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve){
         $countFreeSeat = DB::table('ban_ve_ve')
-                        ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
-                        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
-                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->join('so_do_giuong','sdg_id','=','did_loai_so_do')
+                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdg_id')
                         ->where('sdgct_san',0)
                         ->where('bvv_bvn_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
