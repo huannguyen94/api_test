@@ -20,8 +20,8 @@ class GetTripInfoRepository
     public function getData($trip_id,$merchant_id){
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
-        ->leftjoin('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
-        ->leftjoin('so_do_giuong','did_loai_so_do','=','sdg_id')
+        ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
+        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
