@@ -141,7 +141,8 @@ class GetTripInfoRepository
                         ->where('bvv_status',0)->count();
         $soGheSan = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
         $countFreeSeat = $countFreeSeatTemp - $soGheSan;
-        $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+        // $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+
 
 
         $countFreeSeatTempSql = DB::table('ban_ve_ve')
@@ -149,16 +150,18 @@ class GetTripInfoRepository
                         ->where('did_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
                         ->where('bvv_status',0)->toSql();
+
+
         $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
 
         if($countFreeSeat == 0){
+            \DB::listen();
             $dataLog = array(
-                'countFreeSeat'        =>$countFreeSeat,
-                'trip_id'              =>$trip_id,
-                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
-                'countFreeSeatTempSql' =>$countFreeSeatTempSql,
-                'soGheSanSql'          =>$soGheSanSql,
-                'loai_so_do'           =>$loai_so_do,
+                'countFreeSeat'   =>$countFreeSeat,
+                'soGheSan'        =>$soGheSan,
+                'trip_id'         =>$trip_id,
+                'sdg_khoa_ban_ve' =>$sdg_khoa_ban_ve,
+                'loai_so_do'      =>$loai_so_do,
 
             );
             \Log::info('activation',['trip' => $dataLog]);
