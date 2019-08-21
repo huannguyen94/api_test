@@ -70,14 +70,22 @@ class GetTripInfoRepository
             return $dataReturnTemp;
         }
 
-
+        $countSeatFree = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','did_id','=','bvv_bvn_id')
+                        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
+                        ->join('so_do_giuong_chi_tiet','sdgct_sdg_id','=','sdgct_id')
+                        ->where('sdgct_san',0)
+                        ->where('bvv_bvn_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->count();
+                        
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
 
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
-        $countSeatFree = 20;
+        
 
         $merchant = $this->getMerchant();
 
