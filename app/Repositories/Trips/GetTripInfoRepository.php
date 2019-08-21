@@ -178,19 +178,18 @@ class GetTripInfoRepository
 
 
 
-        // if($countFreeSeat <= 0 && $trip_id ==333790){
-        //     $dataLog = array(
-        //         'countFreeSeat'        =>$countFreeSeat,
-        //         'soGheSan'             =>$soGheSan,
-        //         'trip_id'              =>$trip_id,
-        //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
-        //         'loai_so_do'           =>$loai_so_do,
-        //         'countFreeSeatTempSql' =>$countFreeSeatTempSql,
-        //         'soGheSanSql'          =>$soGheSanSql,
+        if($trip_id ==316275){
+            $dataLog = array(
+                'countFreeSeat'        =>$countFreeSeat,
+                'soGheSan'             =>$soGheSan,
+                'trip_id'              =>$trip_id,
+                'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+                'loai_so_do'           =>$loai_so_do,
+              
 
-        //     );
-        //     \Log::info('activation',['trip' => $dataLog]);
-        // }
+            );
+            \Log::info('activation',['trip' => $dataLog]);
+        }
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
         return $countFreeSeat;
     }
