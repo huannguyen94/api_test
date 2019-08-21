@@ -139,10 +139,24 @@ class GetTripInfoRepository
         $soGheSan = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
         $countFreeSeat = $countFreeSeatTemp - $soGheSan;
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
+
+
+        $countFreeSeatTempSql = DB::table('ban_ve_ve')
+                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
+                        ->where('did_id',$trip_id)
+                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
+                        ->where('bvv_status',0)->toSql();
+
+
+        $soGheSanSql = DB::table('so_do_giuong_chi_tiet')->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->toSql();
+
         $dataLog = array(
-            'countFreeSeat'   =>$countFreeSeat,
-            'trip_id'         =>$trip_id,
-            'sdg_khoa_ban_ve' =>$sdg_khoa_ban_ve,
+            'countFreeSeat'        =>$countFreeSeat,
+            'trip_id'              =>$trip_id,
+            'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
+            'countFreeSeatTempSql' =>$countFreeSeatTempSql,
+            'soGheSanSql'          =>$soGheSanSql,
+
         );
         \Log::info('activation',['trip' => $dataLog]);
         return $countFreeSeat;
