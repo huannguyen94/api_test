@@ -18,8 +18,7 @@ class GetTripInfoRepository
     }
 
     public function getData($trip_id,$merchant_id){
-        DB::beginTransaction();
-
+       
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
@@ -27,7 +26,7 @@ class GetTripInfoRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-            DB::rollBack();
+          
             throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
             return '';
         }
@@ -89,9 +88,6 @@ class GetTripInfoRepository
 
         $merchant = $this->getMerchant();
 
-        DB::commit();
-
-        
         $countTimeTrip = 0;
         $dataJourneyTemp = array();
         $timeTemp = 0;
@@ -163,7 +159,7 @@ class GetTripInfoRepository
         $dataReturnTemp = json_encode($dataReturn);
         \Log::info('activation',['user' => $dataLog]);
 
-            Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+        Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
 
         return response()->json($dataReturn);
     }
