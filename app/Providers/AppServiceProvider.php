@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Queue, DB;
 
 class AppServiceProvider extends ServiceProvider
 {
