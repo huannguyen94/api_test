@@ -168,7 +168,9 @@ class GetTripInfoRepository
             $countFreeSeat = $countFreeSeatTemp -$soGheSan;
 
         }else{
-            $sdg_khoa_ban_ve = in_array('',$sdg_khoa_ban_ve) ? ($sdg_khoa_ban_ve-1) : $sdg_khoa_ban_ve;
+            if(in_array('',$sdg_khoa_ban_ve)){
+                    $sdg_khoa_ban_ve--;
+            }
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
