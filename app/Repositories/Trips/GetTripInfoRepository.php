@@ -20,13 +20,13 @@ class GetTripInfoRepository
     public function getData($trip_id,$merchant_id){
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
-        ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
-        ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
+        ->letjoin('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
+        ->letjoin('so_do_giuong','did_loai_so_do','=','sdg_id')
         ->where('did_id',$trip_id)->first();
 
-        if(is_null($data)){
-            throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
-        }
+        // if(is_null($data)){
+        //     throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+        // }
 
         $bvo_id                = $data->did_bvo_id;
         $loai_so_do            = $data->did_loai_so_do;
