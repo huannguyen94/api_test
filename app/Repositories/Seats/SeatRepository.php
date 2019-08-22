@@ -12,7 +12,7 @@ class SeatRepository
     }
 
     public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho){
-
+       
         $check = $countFreeSeatTemp = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)->count();
@@ -26,28 +26,31 @@ class SeatRepository
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $countFreeSeatTemp;
+            $countFreeSeat = $countFreeSeatTemp -$soGheSan;
 
-            $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
         }else{
+            $countTemp = count($sdg_khoa_ban_ve);
+            if(in_array('',$sdg_khoa_ban_ve)){
+                    $countTemp--;
+            }
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $sdg_so_cho - $soGheSan - count($sdg_khoa_ban_ve);
+
+            $countFreeSeat = $sdg_so_cho - $soGheSan - $countTemp;
         }
         
 
 
 
-        // if($countFreeSeat <= 0 && $trip_id ==333790){
+        // if($trip_id ==316275){
         //     $dataLog = array(
         //         'countFreeSeat'        =>$countFreeSeat,
         //         'soGheSan'             =>$soGheSan,
         //         'trip_id'              =>$trip_id,
         //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
         //         'loai_so_do'           =>$loai_so_do,
-        //         'countFreeSeatTempSql' =>$countFreeSeatTempSql,
-        //         'soGheSanSql'          =>$soGheSanSql,
+              
 
         //     );
         //     \Log::info('activation',['trip' => $dataLog]);
