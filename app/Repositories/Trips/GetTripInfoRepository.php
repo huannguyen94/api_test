@@ -17,6 +17,7 @@ class GetTripInfoRepository
     }
 
     public function getData($trip_id,$merchant_id){
+        $starttime = microtime(true);
         $data = DB::table('dieu_do_temp')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
@@ -67,6 +68,7 @@ class GetTripInfoRepository
             Amqp::publish('trip.delete', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
         }
 
+        
 
         // include
         $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
@@ -141,6 +143,15 @@ class GetTripInfoRepository
                 'pricing'           =>$dataPricingTemp
             )
         );
+
+        $endtime = microtime(true);
+        $duration = $endtime - $starttime; //calculates total time taken
+        $arrLog = array(
+            'trip_id' => $trip_id,
+            'time' => $duration,
+
+        );
+        \Log::info('activation',['testitme' => $arrLog ]);
 
 
         $dataReturnTemp = json_encode($dataReturn);
