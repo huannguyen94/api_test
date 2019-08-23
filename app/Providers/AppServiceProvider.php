@@ -31,5 +31,14 @@ class AppServiceProvider extends ServiceProvider
                 DB::rollBack();
             }
         });
+
+          DB::listen(function ($query) {
+            $arrLog = array(
+                'sql'      => $query->sql,
+                'bindings' => $query->bindings,
+                'time'     => $query->time,
+            );
+            \Log::info('activation',['logTimeSql' => $arrLog]);
+        });
     }
 }
