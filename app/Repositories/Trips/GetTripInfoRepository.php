@@ -157,7 +157,7 @@ class GetTripInfoRepository
 
         $dataReturnTemp = json_encode($dataReturn);
         //\Log::info('activation',['user' => $this->trip_id]);
-        if($trip_id ==316275){
+        if($trip_id ==311758){
             \Log::info('activation',['trip' => $dataReturnTemp]);
         }
             Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
