@@ -32,6 +32,10 @@ class GetPriceRepository
 
         $data = $this->getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe);
 
+        $arrDataDiem = $this->getToanTuyenOrChang($tuy_id);
+
+        $arrDiem1 = $arrDataDiem['arrDiem1'];
+        $arrDiem2 = $arrDataDiem['arrDiem2'];
         
         $arrReturn = array();
         foreach ($data as $key => $value) {
@@ -42,7 +46,15 @@ class GetPriceRepository
             $priceConfigMaxTemp = 0;
 
             $priceMin = $priceMax = $price;
-            $is_full = $this->getToanTuyenOrChang($tuy_id,$point_a,$point_b);
+
+            $is_full = false;
+            if( in_array($point_a,$arrDiem1) && in_array($point_b,$arrDiem2) ){
+                $is_full =  true;
+            }else if( in_array($point_a,$arrDiem2) && in_array($point_b,$arrDiem1) ){
+                $is_full =  true;
+            }
+
+
             if($bvo_id){
                 if($is_full){
 
@@ -180,7 +192,7 @@ class GetPriceRepository
     //     return $arrReturn;
 
     // }
-    function getToanTuyenOrChang($tuy_id, $bvv_bex_id_a, $bvv_bex_id_b) 
+    function getToanTuyenOrChang($tuy_id) 
     {
         // true: toàn tuyến, false: chặng
 
@@ -217,12 +229,11 @@ class GetPriceRepository
             }
         }
      
-        if( in_array($bvv_bex_id_a,$arrDiem1) && in_array($bvv_bex_id_b,$arrDiem2) ){
-            return true;
-        }else if( in_array($bvv_bex_id_a,$arrDiem2) && in_array($bvv_bex_id_b,$arrDiem1) ){
-            return true;
-        }
-        return false;
+        $arrayReturn = array(
+            'arrDiem1' => $arrDiem1,
+            'arrDiem2' => $arrDiem2,
+        );
+        return $arrayReturn;
     }
 
     

@@ -1,0 +1,13 @@
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `dieu_do_temp` inner join `not_tuyen` on `did_not_id` = `not_id` inner join `bv_loai_dich_vu` on `bvl_id` = `did_loai_xe` inner join `so_do_giuong` on `did_loai_so_do` = `sdg_id` where `did_id` = ? limit 1","bindings":["12345"],"time":3.71}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `ban_ve_gia` where `bvg_type` = ? and `bvg_tuyen_id` = ?","bindings":[1,12],"time":1.98}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `tuyen_diem_don_tra_khach` inner join `ben_xe` on `bex_id` = `tdd_bex_id` where `tdd_tuyen_id` = ? order by `tdd_order` desc","bindings":[12],"time":1.53}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `tuyen_diem_don_tra_khach` inner join `ben_xe` on `bex_id` = `tdd_bex_id` where `tdd_tuyen_id` = ? order by `tdd_order` asc","bindings":[12],"time":1.26}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `tuyen_diem_don_tra_khach` inner join `ben_xe` on `bex_id` = `tdd_bex_id` where `tdd_tuyen_id` = ? order by `tdd_order` asc","bindings":[12],"time":1.29}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `bv_loai_dich_vu` where `bvl_id` = ? limit 1","bindings":[1],"time":0.83}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `so_do_giuong` where `sdg_id` = ? limit 1","bindings":[2],"time":1.09}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `amenities` where 0 = 1","bindings":[],"time":0.82}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `projects` where `pro_id` = ? limit 1","bindings":[0],"time":0.88}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select * from `configuration` where `con_id` = ? limit 1","bindings":[1],"time":1.24}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select count(*) as aggregate from `ban_ve_ve` inner join `dieu_do_temp` on `bvv_bvn_id` = `did_id` where `did_id` = ?","bindings":[12345],"time":1.04}} 
+[2019-08-24 09:09:49] local.INFO: activation {"logTimeSql":{"sql":"select count(*) as aggregate from `so_do_giuong_chi_tiet` inner join `ban_ve_ve` on `sdgct_number` = `bvv_number` where `bvv_bvn_id` = ? and `sdgct_san` = ? and `sdgct_sdg_id` = ?","bindings":[12345,1,2],"time":1.13}} 
+[2019-08-24 09:09:49] local.INFO: activation {"testitme":{"trip_id":12345,"time":0.0729069709777832}} 
