@@ -88,7 +88,7 @@ class MQTripErp extends Command
     }
     public function getInfoMerchant(){
 
-        $check = DB::table('configuration')->where('con_id',1)->first();
+        $check = DB::table('configuration')->select('con_id','con_data','con_merchant_id')->where('con_id',1)->first();
         $check = Collect($check)->toArray();
         $con_data      = $check['con_data'];
         $arrDataConFig = base64_decode($con_data);

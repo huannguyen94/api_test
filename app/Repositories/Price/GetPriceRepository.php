@@ -99,7 +99,10 @@ class GetPriceRepository
 
     public function getPrice($tuy_id,$did_loai_xe){
        
-        $dataGiaVe     = DB::table('ban_ve_gia')->where('bvg_type',$did_loai_xe)->where('bvg_tuyen_id',$tuy_id)->get();
+        $dataGiaVe     = DB::table('ban_ve_gia')
+        ->select('bvg_type','bvg_tuyen_id','bvg_bex_id_a','bvg_bex_id_b','bvg_bvd_id')
+        ->where('bvg_type',$did_loai_xe)
+        ->where('bvg_tuyen_id',$tuy_id)->get();
         $arrReturn     = array();
 
         foreach ($dataGiaVe as $key => $value) {
@@ -122,6 +125,7 @@ class GetPriceRepository
         }
         // $arrParent = $this->getPointParent();
         $data = DB::table('tuyen_diem_don_tra_khach')
+                ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_tuyen_id','bex_kinh_doanh','bex_parent_id')
                 ->JOIN('ben_xe','bex_id','=','tdd_bex_id')->where('tdd_tuyen_id',$tuy_id)
                 ->orderBy('tdd_order',$orderBy)->get();
         $arrReturn = array();
@@ -196,7 +200,11 @@ class GetPriceRepository
     {
         // true: toàn tuyến, false: chặng
 
-        $dataBV  = DB::table('tuyen_diem_don_tra_khach')->join('ben_xe','bex_id','=','tdd_bex_id')->where('tdd_tuyen_id',$tuy_id)->orderBy('tdd_order','ASC')->get();
+        $dataBV  = DB::table('tuyen_diem_don_tra_khach')
+            ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_order','bex_kinh_doanh','bex_parent_id')
+            ->join('ben_xe','bex_id','=','tdd_bex_id')
+            ->where('tdd_tuyen_id',$tuy_id)
+            ->orderBy('tdd_order','ASC')->get();
         $diem_ban_1 = 0;
         $diem_ban_2 = 0;
         $arrDiem1   = array();

@@ -38,7 +38,7 @@ class AppServiceProvider extends ServiceProvider
                 'bindings' => $query->bindings,
                 'time'     => $query->time,
             );
-            \Log::info('activation',['logTimeSql' => $arrLog]);
+            //\Log::info('activation',['logTimeSql' => $arrLog]);
         });
     }
 }

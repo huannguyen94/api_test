@@ -19,6 +19,7 @@ class GetTripInfoRepository
     public function getData($trip_id,$merchant_id){
         $starttime = microtime(true);
         $data = DB::table('dieu_do_temp')
+        ->select('did_not_id','not_id','bvl_id','did_loai_xe','did_loai_so_do','sdg_id','did_id','did_bvo_id','not_tuy_id','not_ma','did_time','did_gio_xuat_ben_that','not_chieu_di','did_status','bvl_name','sdg_name','sdg_so_cho','did_not_option_id','sdg_khoa_ban_ve','did_gio_xuat_ben')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('bv_loai_dich_vu','bvl_id','=','did_loai_xe')
         ->join('so_do_giuong','did_loai_so_do','=','sdg_id')
@@ -46,7 +47,7 @@ class GetTripInfoRepository
         $bvl_name              = $data->bvl_name;
         $sdg_id                = $data->sdg_id;
         $sdg_name              = $data->sdg_name;
-        $sdg_so_cho       = $data->sdg_so_cho;
+        $sdg_so_cho            = $data->sdg_so_cho;
         $did_not_option_id     = $data->did_not_option_id;
         $sdg_khoa_ban_ve       = explode(',',$data->sdg_khoa_ban_ve);
 

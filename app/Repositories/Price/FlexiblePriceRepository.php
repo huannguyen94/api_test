@@ -15,6 +15,7 @@ class FlexiblePriceRepository
         $arrReturn  = array();
 
         $dataSDGCT = DB::table('so_do_giuong_chi_tiet')
+                ->select('sdgct_id','bvog_sdgct_id','bvog_bvo_id','sdgct_sdg_id','bvog_gghg_id')
                 ->join('ban_ve_option_sdg','sdgct_id','=','bvog_sdgct_id')
                 ->where('bvog_bvo_id',$bvo_id)
                 ->where('sdgct_sdg_id',$loai_so_do)->get();
