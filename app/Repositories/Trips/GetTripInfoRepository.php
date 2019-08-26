@@ -177,7 +177,7 @@ class GetTripInfoRepository
 
         if($check > 0){
             $where = ' ';
-            if($sdg_khoa_ban_ve_str !=''){
+            if($sdg_khoa_ban_ve_str !='' && strlen($sdg_khoa_ban_ve_str) > 0){
                 $where =  'AND bvv_number not in ('.$sdg_khoa_ban_ve_str.' )';
             }
             $sql = 'select count(distinct bvv_number)  as count from `ban_ve_ve` 
