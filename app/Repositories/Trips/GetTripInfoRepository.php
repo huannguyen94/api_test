@@ -169,7 +169,10 @@ class GetTripInfoRepository
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)->count();
 
-        
+        $countTemp = count($sdg_khoa_ban_ve);
+            if(in_array('',$sdg_khoa_ban_ve)){
+                    $countTemp--;
+            }
 
         if($check > 0){
             $countTempDung = DB::table('ban_ve_ve')
@@ -181,13 +184,10 @@ class GetTripInfoRepository
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('bvv_status',0)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $sdg_so_cho - $countTempDung -$soGheSan;
+            $countFreeSeat = $sdg_so_cho - $countTempDung -$soGheSan - $countTemp;
 
         }else{
-            $countTemp = count($sdg_khoa_ban_ve);
-            if(in_array('',$sdg_khoa_ban_ve)){
-                    $countTemp--;
-            }
+            
             
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
