@@ -30,8 +30,7 @@ class SeatRepository
             $sql = 'select count(distinct bvv_number)  as count from `ban_ve_ve` 
                     inner join `so_do_giuong_chi_tiet` on `sdgct_number` = `bvv_number` 
                     inner join `dieu_do_temp` on `bvv_bvn_id` = `did_id` 
-                    where `did_id` = '.$trip_id.' 
-                    and `bvv_number` not in ('.$sdg_khoa_ban_ve_str.' )
+                    where `did_id` = '.$trip_id.' '.$where.'
                     and `sdgct_san` = 0 and `bvv_status` > 0';
             $countTempDung = DB::select(DB::raw($sql));
             $countTempDung = isset($countTempDung['0']->count) ? $countTempDung['0']->count : 0;
