@@ -52,6 +52,7 @@ class MQTripErp extends Command
                // \Log::info('activation',['user' => '1111']);
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
+                \Log::info('activation',['user' => $data]);
                 $type = $data->type;
 
                     $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
