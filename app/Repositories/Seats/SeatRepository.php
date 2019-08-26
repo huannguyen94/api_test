@@ -21,27 +21,38 @@ class SeatRepository
             if(in_array('',$sdg_khoa_ban_ve)){
                     $countTemp--;
             }
-
         if($check > 0){
-            $countTempDung = DB::table('ban_ve_ve')
+
+            // $sql = 'select count(distinct bvv_number)  as count from `ban_ve_ve` 
+            //         inner join `so_do_giuong_chi_tiet` on `sdgct_number` = `bvv_number` 
+            //         inner join `dieu_do_temp` on `bvv_bvn_id` = `did_id` 
+            //         where `did_id` = '.$trip_id.' 
+            //         and `bvv_number` not in '.$sdg_khoa_ban_ve.' 
+            //         and `sdgct_san` = 0 and `bvv_status` > 0';
+
+            $dataDung = DB::table('ban_ve_ve')
+                        ->distinct()
+                        ->join('so_do_giuong_chi_tiet','sdgct_number','=','bvv_number')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status','>',0)->count();
-            // Den nhung cai chua book neu book roi thuoc ghe san thi da vao case dung
-            $soGheSan = DB::table('so_do_giuong_chi_tiet')
-                     ->join('ban_ve_ve','sdgct_number','=','bvv_number')
-                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('bvv_status',0)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $sdg_so_cho - $countTempDung -$soGheSan - $countTemp;
+                        ->where('sdgct_san',0)
+                      
+                        ->where('bvv_status','>',0)->get();
+                      
+            
+            $arrCount = array();
+            foreach ($dataDung as $key => $value) {
+                $bvv_number = $value->bvv_number;
+                $arrCount[$bvv_number] = 1;
+            }
+            $countTempDung = (count($arrCount));
+            $countFreeSeat = $sdg_so_cho - $countTempDung  - $countTemp;
 
         }else{
             
             
-            $soGheSan = DB::table('so_do_giuong_chi_tiet')
-                     ->join('ban_ve_ve','sdgct_number','=','bvv_number')
-                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-
-            $countFreeSeat = $sdg_so_cho - $soGheSan - $countTemp;
+            $countFreeSeat = $sdg_so_cho - $countTemp;
         }
 
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
