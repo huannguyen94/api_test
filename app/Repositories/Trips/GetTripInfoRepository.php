@@ -168,45 +168,34 @@ class GetTripInfoRepository
         $check = $countFreeSeatTemp = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)->count();
+
+        
+
         if($check > 0){
-            $countFreeSeatTemp = DB::table('ban_ve_ve')
+            $countTempDung = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
                         ->where('did_id',$trip_id)
                         ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('bvv_status',0)->count();
-
+                        ->where('bvv_status','>',0)->count();
+            // Den nhung cai chua book neu book roi thuoc ghe san thi da vao case dung
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
-                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
-            $countFreeSeat = $countFreeSeatTemp -$soGheSan;
+                     ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('bvv_status',0)->where('sdgct_sdg_id',$loai_so_do)->count();
+            $countFreeSeat = $sdg_so_cho - $countTempDung -$soGheSan;
 
         }else{
             $countTemp = count($sdg_khoa_ban_ve);
             if(in_array('',$sdg_khoa_ban_ve)){
                     $countTemp--;
             }
+            
             $soGheSan = DB::table('so_do_giuong_chi_tiet')
                      ->join('ban_ve_ve','sdgct_number','=','bvv_number')
                      ->where('bvv_bvn_id',$trip_id)->where('sdgct_san',1)->where('sdgct_sdg_id',$loai_so_do)->count();
 
             $countFreeSeat = $sdg_so_cho - $soGheSan - $countTemp;
         }
-        
 
-
-
-        // if($trip_id ==316275){
-        //     $dataLog = array(
-        //         'countFreeSeat'        =>$countFreeSeat,
-        //         'soGheSan'             =>$soGheSan,
-        //         'trip_id'              =>$trip_id,
-        //         'sdg_khoa_ban_ve'      =>$sdg_khoa_ban_ve,
-        //         'loai_so_do'           =>$loai_so_do,
-              
-
-        //     );
-        //     \Log::info('activation',['trip' => $dataLog]);
-        // }
         $countFreeSeat = $countFreeSeat > 0 ? $countFreeSeat : 0;
         return $countFreeSeat;
     }
