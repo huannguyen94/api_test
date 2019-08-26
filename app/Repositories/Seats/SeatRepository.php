@@ -11,7 +11,7 @@ class SeatRepository
 
     }
 
-    public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho){
+    public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho,$sdg_khoa_ban_ve_str){
        
         $check = $countFreeSeatTemp = DB::table('ban_ve_ve')
                         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
@@ -21,32 +21,18 @@ class SeatRepository
             if(in_array('',$sdg_khoa_ban_ve)){
                     $countTemp--;
             }
+
         if($check > 0){
 
-            // $sql = 'select count(distinct bvv_number)  as count from `ban_ve_ve` 
-            //         inner join `so_do_giuong_chi_tiet` on `sdgct_number` = `bvv_number` 
-            //         inner join `dieu_do_temp` on `bvv_bvn_id` = `did_id` 
-            //         where `did_id` = '.$trip_id.' 
-            //         and `bvv_number` not in '.$sdg_khoa_ban_ve.' 
-            //         and `sdgct_san` = 0 and `bvv_status` > 0';
-
-            $dataDung = DB::table('ban_ve_ve')
-                        ->distinct()
-                        ->join('so_do_giuong_chi_tiet','sdgct_number','=','bvv_number')
-                        ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
-                        ->where('did_id',$trip_id)
-                        ->whereNotIn('bvv_number',$sdg_khoa_ban_ve)
-                        ->where('sdgct_san',0)
-                      
-                        ->where('bvv_status','>',0)->get();
-                      
-            
-            $arrCount = array();
-            foreach ($dataDung as $key => $value) {
-                $bvv_number = $value->bvv_number;
-                $arrCount[$bvv_number] = 1;
-            }
-            $countTempDung = (count($arrCount));
+            $sql = 'select count(distinct bvv_number)  as count from `ban_ve_ve` 
+                    inner join `so_do_giuong_chi_tiet` on `sdgct_number` = `bvv_number` 
+                    inner join `dieu_do_temp` on `bvv_bvn_id` = `did_id` 
+                    where `did_id` = '.$trip_id.' 
+                    and `bvv_number` not in ('.$sdg_khoa_ban_ve_str.' )
+                    and `sdgct_san` = 0 and `bvv_status` > 0';
+            $countTempDung = DB::select(DB::raw($sql));
+            $countTempDung = isset($countTempDung['0']->count) ? $countTempDung['0']->count : 0;
+           
             $countFreeSeat = $sdg_so_cho - $countTempDung  - $countTemp;
 
         }else{
@@ -68,8 +54,8 @@ class SeatRepository
         if(is_null($data)){
             throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
         }
-        $sdg_khoa_ban_ve  = $data->sdg_khoa_ban_ve;
-        $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve);
+        $sdg_khoa_ban_ve_str  = $data->sdg_khoa_ban_ve;
+        $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve_str);
 
         $tongve  = $data->sdg_so_cho;
 
@@ -85,7 +71,7 @@ class SeatRepository
         $did_not_option_id     = $data->did_not_option_id;
         $loai_so_do            = $data->did_loai_so_do;
 
-        $countFreeSeat = $this->getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$tongve);
+        $countFreeSeat = $this->getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$tongve,$sdg_khoa_ban_ve_str);
         $dataReturn = array(
             'trip'=> array(
                 'erp_trip_info'=>array(
