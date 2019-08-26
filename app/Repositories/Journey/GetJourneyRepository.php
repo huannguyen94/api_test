@@ -68,6 +68,7 @@ class GetJourneyRepository
 
     public function getTimeTripToOption($id,$tuy_id = 0,$did_loai_xe=0){
         $data = DB::table('routing_option')->join('routing_option_detail','roo_id','=','rod_routing_option_id')
+        ->select('roo_id','rod_routing_option_id','bex_id','rod_ben_xe_id','rod_tuyen_id','rod_dich_vu_id','roo_id','bex_ten','rod_time_run','bex_kinh_doanh','rod_active','bex_parent_id')
         ->join('ben_xe','bex_id','=','rod_ben_xe_id')
         ->where('rod_tuyen_id',$tuy_id)
         ->where('rod_dich_vu_id',$did_loai_xe)
@@ -88,7 +89,9 @@ class GetJourneyRepository
                 );
             }
         }
-        $dataDiem = DB::table('tuyen_diem_don_tra_khach')->where('tdd_tuyen_id',$tuy_id)->orderby('tdd_order','ASC')->get();
+        $dataDiem = DB::table('tuyen_diem_don_tra_khach')
+        ->select('tdd_tuyen_id','tdd_order','tdd_bex_id','')
+        ->where('tdd_tuyen_id',$tuy_id)->orderby('tdd_order','ASC')->get();
 
         foreach ($dataDiem as $key => $value) {
             $bex_id = $value->tdd_bex_id;
@@ -103,6 +106,7 @@ class GetJourneyRepository
     }
     public function getTimeToRoute($tuy_id){
         $data = DB::table('tuyen_diem_don_tra_khach')
+        ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_order','bex_ten','tdd_thoi_gian','bex_kinh_doanh','bex_parent_id')
         ->join('ben_xe','bex_id','=','tdd_bex_id')
         ->where('tdd_tuyen_id',$tuy_id)->orderby('tdd_order','ASC')->get();
         $arrayReturn = array();
