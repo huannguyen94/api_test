@@ -69,11 +69,10 @@ class GetTripInfoRepository
             Amqp::publish('trip.delete', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
         }
 
-        
-
         // include
-        $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
         $dataJourney   =  $this->getJourneyRepository->getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id);
+        $dataPricing   =  $this->getPriceRepository->getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di);
+        
 
         $dataAmenities = $this->carAmenitiesRepository->getAmenity($did_loai_xe, $loai_so_do);
 
@@ -84,10 +83,15 @@ class GetTripInfoRepository
         $dataJourneyTemp = array();
         $timeTemp = 0;
         $arrTimeTemp = array();
+        $arrDon  = array();
+
         foreach ($dataJourney as $key => $value) {
             $time = $value['erp_time_run'];
             $countTimeTrip = $countTimeTrip + $time;
-
+            if($value['erp_is_pickup']){
+                $arrDon[] = $value['erp_place_id'];
+            }
+            
             $dataJourneyTemp[]['erp_place_info'] = array(
                 'erp_place_id'        =>$value['erp_place_id'],
                 'erp_place_name'      =>$value['erp_place_name'],
@@ -105,16 +109,19 @@ class GetTripInfoRepository
 
         $dataPricingTemp =  array();
         foreach ($dataPricing as $key => $value) {
-            $dataPricingTemp[]['erp_pricing_info']= array(
-                'erp_from'          =>$value['erp_from'],
-                'erp_to'            =>$value['erp_to'],
-                'erp_time_run_from' =>isset($arrTimeTemp[$value['erp_from']]) ? $arrTimeTemp[$value['erp_from']] : 0,
-                'erp_time_run_to'   =>isset($arrTimeTemp[$value['erp_to']]) ? $arrTimeTemp[$value['erp_to']] : 0,
-                'erp_base_price'    =>$value['erp_base_price'],
-                'erp_min_price'     =>($value['erp_min_price'] > $value['erp_base_price']) ?  $value['erp_base_price'] : $value['erp_min_price'],
-                'erp_max_price'     =>($value['erp_max_price'] < $value['erp_base_price']) ? $value['erp_base_price'] : $value['erp_max_price'],
 
-            );
+            if(in_array($value['erp_from'],$arrDon)){
+                $dataPricingTemp[]['erp_pricing_info']= array(
+                    'erp_from'          =>$value['erp_from'],
+                    'erp_to'            =>$value['erp_to'],
+                    'erp_time_run_from' =>isset($arrTimeTemp[$value['erp_from']]) ? $arrTimeTemp[$value['erp_from']] : 0,
+                    'erp_time_run_to'   =>isset($arrTimeTemp[$value['erp_to']]) ? $arrTimeTemp[$value['erp_to']] : 0,
+                    'erp_base_price'    =>$value['erp_base_price'],
+                    'erp_min_price'     =>($value['erp_min_price'] > $value['erp_base_price']) ?  $value['erp_base_price'] : $value['erp_min_price'],
+                    'erp_max_price'     =>($value['erp_max_price'] < $value['erp_base_price']) ? $value['erp_base_price'] : $value['erp_max_price'],
+
+                );
+            }    
         }
         $countFreeSeat = $this->getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho);
         $dataReturn = array(
