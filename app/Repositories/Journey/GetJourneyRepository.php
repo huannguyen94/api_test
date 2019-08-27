@@ -90,7 +90,7 @@ class GetJourneyRepository
             }
         }
         $dataDiem = DB::table('tuyen_diem_don_tra_khach')
-        ->select('tdd_tuyen_id','tdd_order','tdd_bex_id','')
+        ->select('tdd_tuyen_id','tdd_order','tdd_bex_id')
         ->where('tdd_tuyen_id',$tuy_id)->orderby('tdd_order','ASC')->get();
 
         foreach ($dataDiem as $key => $value) {
