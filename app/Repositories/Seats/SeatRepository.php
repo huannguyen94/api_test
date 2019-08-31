@@ -78,7 +78,7 @@ class SeatRepository
             'trip'=> array(
                 'erp_trip_info'=>array(
                     'erp_trip_id'               =>$trip_id,
-                    'erp_node_time'             =>$data->did_gio_xuat_ben,
+                    'erp_node_time'             =>$did_gio_xuat_ben_that,
                     'erp_wayroad_id'            =>$tuy_id,
                     'erp_node_code'             =>$not_ma,
                     'erp_merchant_id'           =>$merchant_id,
@@ -88,6 +88,7 @@ class SeatRepository
                     'erp_car_type_id'           =>$sdg_id,
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
+                    'erp_trip_status'           =>$did_status,
                     'erp_trip_total_seats'      =>$tongve,
                     'erp_trip_total_free_seats' =>$countFreeSeat,
                 ),
