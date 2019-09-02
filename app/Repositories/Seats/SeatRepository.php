@@ -88,6 +88,7 @@ class SeatRepository
                     'erp_car_type_id'           =>$sdg_id,
                     'erp_car_type_name'         =>$sdg_name,
                     'erp_trip_staus'            =>$did_status,
+                    'erp_trip_status'           =>$did_status,
                     'erp_trip_total_seats'      =>$tongve,
                     'erp_trip_total_free_seats' =>$countFreeSeat,
                 ),
