@@ -96,7 +96,7 @@ class MQTripErp extends Command
         $arrDataConFig = json_decode($arrDataConFig,true);
         $merchant_id = isset($arrDataConFig['con_merchant_id']) ? $arrDataConFig['con_merchant_id'] : 0;
         $arrReturn = array(
-            'merchant_id'  => 1,
+            'merchant_id'  => $merchant_id,
 
         );
 
