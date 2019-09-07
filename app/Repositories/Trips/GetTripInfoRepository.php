@@ -85,14 +85,25 @@ class GetTripInfoRepository
         $timeTemp = 0;
         $arrTimeTemp = array();
         $arrDon  = array();
-
+        
         foreach ($dataJourney as $key => $value) {
             $time = $value['erp_time_run'];
             $countTimeTrip = $countTimeTrip + $time;
             if($value['erp_is_pickup']){
                 $arrDon[] = $value['erp_place_id'];
             }
-            
+
+            $TCId = $value['erp_TCId'];
+            $dataTC = array();
+            if($TCId !=''){
+                $dataTC = $this->getVungTrungChuyen($TCId);
+
+            }
+            //$dataTC = $this->getVungTrungChuyen('1,3,4,5,6');
+            $arrRturnTC = array(
+                'type'        =>'multipolygon',
+                'coordinates' =>$dataTC,
+            );
             $dataJourneyTemp[]['erp_place_info'] = array(
                 'erp_place_id'        =>$value['erp_place_id'],
                 'erp_place_name'      =>$value['erp_place_name'],
@@ -101,6 +112,7 @@ class GetTripInfoRepository
                 'erp_is_pickup'       =>$value['erp_is_pickup'],
                 'erp_is_charge'       =>$value['erp_is_charge'],
                 'erp_parent_place_id' =>$value['erp_parent_place_id'],
+                'erp_transit_area'    =>$arrRturnTC,
 
             );
             $timeTemp = $timeTemp + $value['erp_time_run'];
@@ -168,10 +180,49 @@ class GetTripInfoRepository
         $dataReturnTemp = json_encode($dataReturn);
         //\Log::info('activation',['user' => $this->trip_id]);
         
-            Amqp::publish('trip.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+            Amqp::publish('trip.updated', $dataReturnTemp , [
+                'host'                  => env('QUEUE_HOST'),
+                'port'                  => env('QUEUE_PORT'),
+                'username'              => env('QUEUE_USER'),
+                'password'              => env('QUEUE_PASSWORD'),
+                'vhost'                 => env('QUEUE_VHOST'),
+                'exchange'              => 'trip_events'
+            ]);
 
         return response()->json($dataReturn);
     }
+
+
+    function getVungTrungChuyen($strId){
+      $arrId =  explode(",",$strId);
+      $dataReturn = array();
+      if(is_array($arrId) && count($arrId)){
+          $data = DB::table('vung_trung_chuyen')->select(DB::raw('AsText(vtt_content) as polygon'))->whereIn('vtt_id',$arrId)->get();
+          $arrReturn = array();
+          foreach ($data as $key => $value) {
+            $arrPolyon = array();
+            $polygon = $value->polygon;
+            $polygon = str_replace("POLYGON","",$polygon);
+            $polygon = str_replace("((","",$polygon);
+            $polygon = str_replace("))","",$polygon);
+            $arrPolyon = explode(',', $polygon);
+            $arrPolyonChild = array();
+            if(count($arrPolyon) > 0 ){
+                foreach ($arrPolyon as $key => $valueChild) {
+                    $arrPolyonChild[] = explode(' ', $valueChild);   
+                }
+            }
+            $arrReturn[] = $arrPolyonChild;
+          }
+
+      }
+      
+      return json_encode($arrReturn);
+
+      
+   }
+
+
     public function getCountFreeSeat($trip_id,$sdg_khoa_ban_ve,$loai_so_do,$sdg_so_cho,$sdg_khoa_ban_ve_str){
        
         $check = $countFreeSeatTemp = DB::table('ban_ve_ve')

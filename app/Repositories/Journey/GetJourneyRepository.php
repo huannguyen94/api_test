@@ -21,6 +21,7 @@ class GetJourneyRepository
                 foreach ($data as $key => $value) {
                     $dataTemp[] = array(
                         'erp_place_id'        =>$value['erp_place_id'],
+                        'erp_TCId'            =>$value['erp_TCId'],
                         'erp_place_name'      =>$value['erp_place_name'],
                         'erp_time_run'        =>$timeRun,
                         'erp_order_no'        =>$value['erp_order_no'],
@@ -48,6 +49,7 @@ class GetJourneyRepository
 
                     $dataTemp[] = array(
                         'erp_place_id'        =>$value['erp_place_id'],
+                        'erp_TCId'            =>$value['erp_TCId'],
                         'erp_place_name'      =>$value['erp_place_name'],
                         'erp_time_run'        =>$timeRun,
                         'erp_order_no'        =>$value['erp_order_no'],
@@ -68,7 +70,7 @@ class GetJourneyRepository
 
     public function getTimeTripToOption($id,$tuy_id = 0,$did_loai_xe=0){
         $data = DB::table('routing_option')->join('routing_option_detail','roo_id','=','rod_routing_option_id')
-        ->select('roo_id','rod_routing_option_id','bex_id','rod_ben_xe_id','rod_tuyen_id','rod_dich_vu_id','roo_id','bex_ten','rod_time_run','bex_kinh_doanh','rod_active','bex_parent_id')
+        ->select('roo_id','rod_routing_option_id','bex_id','rod_ben_xe_id','rod_tuyen_id','rod_dich_vu_id','roo_id','bex_ten','rod_time_run','bex_kinh_doanh','rod_active','bex_parent_id','bex_vung_trung_chuyen')
         ->join('ben_xe','bex_id','=','rod_ben_xe_id')
         ->where('rod_tuyen_id',$tuy_id)
         ->where('rod_dich_vu_id',$did_loai_xe)
@@ -80,6 +82,7 @@ class GetJourneyRepository
             foreach ($data as $key => $value) {
                 $arrayReturnTemp[$value->bex_id] = array(
                     'erp_place_id'        =>$value->bex_id,
+                    'erp_TCId'            =>$value->bex_vung_trung_chuyen,
                     'erp_place_name'      =>$value->bex_ten,
                     'erp_time_run'        =>$value->rod_time_run,
                     'erp_is_charge'       =>$value->bex_kinh_doanh > 0 ? true : false,
@@ -106,7 +109,7 @@ class GetJourneyRepository
     }
     public function getTimeToRoute($tuy_id){
         $data = DB::table('tuyen_diem_don_tra_khach')
-        ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_order','bex_ten','tdd_thoi_gian','bex_kinh_doanh','bex_parent_id')
+        ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_order','bex_ten','tdd_thoi_gian','bex_kinh_doanh','bex_parent_id','bex_vung_trung_chuyen')
         ->join('ben_xe','bex_id','=','tdd_bex_id')
         ->where('tdd_tuyen_id',$tuy_id)->orderby('tdd_order','ASC')->get();
         $arrayReturn = array();
@@ -115,6 +118,7 @@ class GetJourneyRepository
             foreach ($data as $key => $value) {
                 $arrayReturn[] = array(
                     'erp_place_id'        =>$value->bex_id,
+                    'erp_TCId'            =>$value->bex_vung_trung_chuyen,
                     'erp_place_name'      =>$value->bex_ten,
                     'erp_time_run'        =>$value->tdd_thoi_gian,
                     'erp_order_no'        =>$value->tdd_order,

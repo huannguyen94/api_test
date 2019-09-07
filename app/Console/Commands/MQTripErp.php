@@ -46,16 +46,17 @@ class MQTripErp extends Command
         $dataMerchant = $this->getInfoMerchant();
         $merchant_id = isset($dataMerchant['merchant_id']) ? $dataMerchant['merchant_id'] : 0;
         $queue_trip_erp_temp =  $merchant_id.'-queue-trip-erp';
+
         Amqp::consume("$queue_trip_erp_temp", function ( $message, $resolver) use ($merchant_id){
             $routingKey = $message->get('routing_key');
+
             if($routingKey ==$merchant_id.'-routing-trip-erp'){
                // \Log::info('activation',['user' => '1111']);
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
                 $type = $data->type;
 
-                    $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
-
+                $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
 
@@ -95,7 +96,7 @@ class MQTripErp extends Command
         $arrDataConFig = json_decode($arrDataConFig,true);
         $merchant_id = isset($arrDataConFig['con_merchant_id']) ? $arrDataConFig['con_merchant_id'] : 0;
         $arrReturn = array(
-            'merchant_id'  => $merchant_id,
+            'merchant_id'  => 1,
 
         );
 

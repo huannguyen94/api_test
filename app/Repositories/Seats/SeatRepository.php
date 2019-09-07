@@ -96,7 +96,14 @@ class SeatRepository
             )
         );
         $dataReturnTemp = json_encode($dataReturn);
-        Amqp::publish('seat.updated', $dataReturnTemp , ['vhost'    => 'havazerp','exchange' =>'trip_events']);
+        Amqp::publish('seat.updated', $dataReturnTemp , [
+            'host'                  => env('QUEUE_HOST'),
+            'port'                  => env('QUEUE_PORT'),
+            'username'              => env('QUEUE_USER'),
+            'password'              => env('QUEUE_PASSWORD'),
+            'vhost'                 => env('QUEUE_VHOST'),
+            'exchange'              => 'trip_events'
+        ]);
 
         return response()->json($dataReturn);
     }
