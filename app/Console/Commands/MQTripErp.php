@@ -61,7 +61,7 @@ class MQTripErp extends Command
                     $arrTrip = $data->payload->trip_id;
 
                     $resolver->acknowledge($message);
-                    //$resolver->stopWhenProcessed();
+                    $resolver->stopWhenProcessed();
                     if($type=='trip.auto.not'){
                         $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
                     }
