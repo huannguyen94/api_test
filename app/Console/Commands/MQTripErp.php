@@ -58,8 +58,14 @@ class MQTripErp extends Command
                 
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
+<<<<<<< HEAD
                     $this->info("trip.auto.not");
                    
+=======
+
+                    $resolver->acknowledge($message);
+                    $resolver->stopWhenProcessed();
+>>>>>>> b597958f25e75b0a5dbb56c58aaff54ba70ef0f0
                     if($type=='trip.auto.not'){
                         $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
                     }

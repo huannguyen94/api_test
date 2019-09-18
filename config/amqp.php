@@ -8,8 +8,8 @@ return [
     |--------------------------------------------------------------------------
     */
 
-    'use' => 'production', 
 
+    'use' => 'production', 
     /*
     |--------------------------------------------------------------------------
     | AMQP properties separated by key
@@ -19,11 +19,11 @@ return [
     'properties' => [
 
         'production' => [
-            'host'                  => '103.141.140.25', 
-            'port'                  => 5672,
-            'username'              => 'admin',
-            'password'              => 'admin@1234',
-            'vhost'                 => '/',
+            'host'                  => env('ERP_QUEUE_HOST'),
+            'port'                  => env('ERP_QUEUE_PORT'),
+            'username'              => env('ERP_QUEUE_USER'),
+            'password'              => env('ERP_QUEUE_PASSWORD'),
+            'vhost'                 => env('ERP_QUEUE_VHOST'),
             'connect_options'       => [],
             'ssl_options'           => [],
 
@@ -51,11 +51,11 @@ return [
             'consumer_nowait'       => false,
             'timeout'               => 0,
             'persistent'            => true,
+
             'qos'                   => false,
             'qos_prefetch_size'     => 0,
             'qos_prefetch_count'    => 1,
             'qos_a_global'          => false
-
         ],
 
     ],
