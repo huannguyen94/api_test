@@ -78,8 +78,7 @@ class MQSeatsErp extends Command
             }
         }, [
             'exchange' =>$merchant_id.'-seats-events-erp',
-            'routing'  =>$merchant_id."-seats-erp.*",
-            'vhost'    => "havazerp"
+            'routing'  =>$merchant_id."-seats-erp.*"
         ]);
     }
 

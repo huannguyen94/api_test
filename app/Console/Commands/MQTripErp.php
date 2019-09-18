@@ -78,8 +78,7 @@ class MQTripErp extends Command
             }
         }, [
             'exchange' =>$merchant_id.'-trip_events_erp',
-            'routing'  =>$merchant_id."-queue-trip-erp.*",
-            'vhost'    => "havazerp"
+            'routing'  =>$merchant_id."-queue-trip-erp.*"
         ]);
     }
     public function getAllTrip(){
