@@ -23,7 +23,7 @@ return [
             'port'                  => env('ERP_QUEUE_PORT'),
             'username'              => env('ERP_QUEUE_USER'),
             'password'              => env('ERP_QUEUE_PASSWORD'),
-            'vhost'                 => env('havazerp'),
+            'vhost'                 => env('ERP_QUEUE_VHOST'),
             'connect_options'       => [],
             'ssl_options'           => [],
 
