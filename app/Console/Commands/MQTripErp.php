@@ -46,10 +46,8 @@ class MQTripErp extends Command
         $dataMerchant = $this->getInfoMerchant();
         $merchant_id = isset($dataMerchant['merchant_id']) ? $dataMerchant['merchant_id'] : 0;
         $queue_trip_erp_temp =  $merchant_id.'-queue-trip-erp';
-
         Amqp::consume("$queue_trip_erp_temp", function ( $message, $resolver) use ($merchant_id){
             $routingKey = $message->get('routing_key');
-
             if($routingKey ==$merchant_id.'-routing-trip-erp'){
                // \Log::info('activation',['user' => '1111']);
                 $dataJson = $message->body;
@@ -57,17 +55,20 @@ class MQTripErp extends Command
                 $type = $data->type;
 
                 $merchant_id_out = (isset($data->merchant_id) && $data->merchant_id !='') ? $data->merchant_id : 0;
+                
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
-
-                    $resolver->acknowledge($message);
-                    //$resolver->stopWhenProcessed();
+                    $this->info("trip.auto.not");
+                   
                     if($type=='trip.auto.not'){
                         $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
                     }
                     foreach ($arrTrip as $key => $trip_id) {
+                        
                         dispatch(new TripsErpSanJob($trip_id,$merchant_id));
                     }
+                    $resolver->acknowledge($message);
+                    $resolver->stopWhenProcessed();
                 }else{
                     \Log::error('Lỗi ID nhà xe không hợp lệ');
                     throw new \Exception('Lỗi ID nhà xe không hợp lệ');
@@ -78,7 +79,7 @@ class MQTripErp extends Command
             }
         }, [
             'exchange' =>$merchant_id.'-trip_events_erp',
-            'routing'  =>$merchant_id."-queue-trip-erp.*"
+            'routing'  =>$merchant_id."-queue-trip-erp.*",
         ]);
     }
     public function getAllTrip(){
