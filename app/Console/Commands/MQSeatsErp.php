@@ -63,9 +63,10 @@ class MQSeatsErp extends Command
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
 
-                    $resolver->acknowledge($message);
                     //$resolver->stopWhenProcessed();
+
                     foreach ($arrTrip as $key => $trip_id) {
+                        $this->info("vào trong for trip");
                         $this->seatRepository->getData($trip_id,$merchant_id);
                     }
                     $resolver->acknowledge($message);
