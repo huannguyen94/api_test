@@ -68,6 +68,7 @@ class MQSeatsErp extends Command
                     foreach ($arrTrip as $key => $trip_id) {
                         $this->seatRepository->getData($trip_id,$merchant_id);
                     }
+                    $resolver->acknowledge($message);
                 }else{
                     \Log::error('Lỗi ID nhà xe không hợp lệ');
                     throw new \Exception('Lỗi ID nhà xe không hợp lệ');

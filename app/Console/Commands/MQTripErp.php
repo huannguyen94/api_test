@@ -58,7 +58,6 @@ class MQTripErp extends Command
                
                 if ( $merchant_id_out == $merchant_id && $merchant_id > 0 ){
                     $arrTrip = $data->payload->trip_id;
-                    $this->info("trip.auto.not");
                    
                     if($type=='trip.auto.not'){
                         $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
@@ -68,7 +67,7 @@ class MQTripErp extends Command
                         dispatch(new TripsErpSanJob($trip_id,$merchant_id));
                     }
                     $resolver->acknowledge($message);
-                    $resolver->stopWhenProcessed();
+                    //$resolver->stopWhenProcessed();
                 }else{
                     \Log::error('Lỗi ID nhà xe không hợp lệ');
                     throw new \Exception('Lỗi ID nhà xe không hợp lệ');
