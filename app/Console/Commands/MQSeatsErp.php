@@ -66,7 +66,6 @@ class MQSeatsErp extends Command
                     //$resolver->stopWhenProcessed();
 
                     foreach ($arrTrip as $key => $trip_id) {
-                        $this->info("vào trong for trip");
                         $this->seatRepository->getData($trip_id,$merchant_id);
                     }
                     $resolver->acknowledge($message);
