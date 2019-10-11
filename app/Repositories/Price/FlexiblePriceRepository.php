@@ -110,6 +110,7 @@ class FlexiblePriceRepository
             'tien_giam_toan_tuyen_max' =>$tien_giam_toan_tuyen_max,
             'hinh_thuc'                =>$hinh_thuc,
         );
+        dd($arrReturn);
         return $arrReturn;       
     }
 }
