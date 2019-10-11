@@ -130,8 +130,8 @@ class GetTripInfoRepository
                     'erp_time_run_from' =>isset($arrTimeTemp[$value['erp_from']]) ? $arrTimeTemp[$value['erp_from']] : 0,
                     'erp_time_run_to'   =>isset($arrTimeTemp[$value['erp_to']]) ? $arrTimeTemp[$value['erp_to']] : 0,
                     'erp_base_price'    =>$value['erp_base_price'],
-                    'erp_min_price'     =>($value['erp_min_price'] > $value['erp_base_price']) ?  $value['erp_base_price'] : $value['erp_min_price'],
-                    'erp_max_price'     =>($value['erp_max_price'] < $value['erp_base_price']) ? $value['erp_base_price'] : $value['erp_max_price'],
+                    'erp_min_price'     =>$value['erp_min_price'],
+                    'erp_max_price'     =>$value['erp_max_price'],
 
                 );
             }    

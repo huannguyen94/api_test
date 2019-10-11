@@ -23,7 +23,7 @@ Route::get('/debug-sentry', function () {
 Route::get('test-job','podCastController@testJob');
 
 Route::get('/', function () {
-
+	dd( strtotime('01-09-2019') );
 //    $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
 //
 //    return time();
