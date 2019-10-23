@@ -41,7 +41,7 @@ class CronSyncElastic extends Command
         $bar = $this->output->createProgressBar(1);
 
         $bar->start();
-        $data = DB::table('ban_ve_xuong_xe')->orderBy('bvv_time_cancel','DESC')->limit(10)->get();
+        $data = DB::table('ban_ve_xuong_xe')->orderBy('bvv_time_cancel','DESC')->limit(5000)->get();
         $params = ['body' => []];
         foreach($data as $row) {
             $params['body'][] = [
