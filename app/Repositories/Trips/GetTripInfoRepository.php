@@ -30,7 +30,7 @@ class GetTripInfoRepository
             return 0;
         }
 
-        if(is_null($data->did_gio_xuat_ben_that)){
+        if(is_null($data->did_gio_xuat_ben_that) OR $data->did_gio_xuat_ben_that ==''){
             throw new \Exception('Không tồn tại thời gian xuất bến với Trip id = '.$trip_id);
             return 0;
         }
