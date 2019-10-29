@@ -26,8 +26,12 @@ class GetTripInfoRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-            \Log::info('activation',['trip_false' => $trip_id]);
             throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+            return 0;
+        }
+
+        if(is_null($data->did_gio_xuat_ben_that)){
+            throw new \Exception('Không tồn tại thời gian xuất bến với Trip id = '.$trip_id);
             return 0;
         }
 
