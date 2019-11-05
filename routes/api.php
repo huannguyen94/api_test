@@ -21,6 +21,7 @@ Route::group(['namespace'=>'Api'],function(){
 	
     Route::get('test/{id}','WebHookErpController@webHookErp');
     Route::get('seat/{id}','WebHookErpController@veTrong');
+    Route::get('sync-sdg','WebHookErpController@syncSDG');
 
 
 	Route::group(['middleware' => ['apiToken'] ], function () {
