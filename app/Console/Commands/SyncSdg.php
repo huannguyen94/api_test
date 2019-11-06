@@ -41,7 +41,7 @@ class SyncSdg extends Command
 
         Amqp::consume("queue-sync-sdg", function ( $message, $resolver){
 
-            try{
+            //try{
                 $dataJson = $message->body;
                 $data = json_decode($dataJson);
                 $day_from = strtotime($data->day_from);
@@ -52,13 +52,14 @@ class SyncSdg extends Command
                 ->where('did_status',1)->get();
                 foreach ($data as $key => $value) {
                     $did_loai_so_do = $value->did_loai_so_do;
-                    dispatch(new syncSdgJob($did_loai_so_do))->onQueue('sync-sdg');
+                    $did_id = $value->did_id;
+                    dispatch(new syncSdgJob($did_loai_so_do,$did_id))->onQueue('sync-sdg');
                 }
                 
                 $resolver->acknowledge($message);
-            }catch (\Exception $e) {
-                throw new \Exception('Lỗi định dạng ngày');
-            }
+            // }catch (\Exception $e) {
+            //     throw new \Exception('Lỗi định dạng ngày');
+            // }
             
 
         }, [

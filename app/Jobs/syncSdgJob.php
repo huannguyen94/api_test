@@ -20,10 +20,12 @@ class syncSdgJob implements ShouldQueue
 
     public $tries = 3;
     protected $did_loai_so_do;
+    protected $did_id;
 
-    public function __construct($did_loai_so_do)
+    public function __construct($did_loai_so_do,$did_id)
     {
          $this->did_loai_so_do =$did_loai_so_do;
+         $this->did_id =$did_id;
         
     }
 
@@ -46,7 +48,7 @@ class syncSdgJob implements ShouldQueue
                                   VALUES ";
                 $queryInsertVAl   = '';
                 foreach($dataLOCho as $key => $row){
-                    $queryInsertVAl   .= "(" . $row->sdgct_number . "," . $did_id . "," . $row->sdgct_disable . "," . $row->sdgct_warning . "),";              
+                    $queryInsertVAl   .= "(" . $row->sdgct_number . "," . $this->did_id . "," . $row->sdgct_disable . "," . $row->sdgct_warning . "),";              
                 }  
                 $queryInsertVAl   = trim($queryInsertVAl,",");
                 if($queryInsertVAl != ''){
