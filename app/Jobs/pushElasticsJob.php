@@ -7,6 +7,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use DB;
 
 class pushElasticsJob implements ShouldQueue
 {
@@ -36,13 +37,11 @@ class pushElasticsJob implements ShouldQueue
 
             $dataPoint       = $this->getPoint();
             $dataServiceType = $this->serviceType();
-
-            $bar->start();
             $data = DB::table('ban_ve_xuong_xe')
             ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
             ->join('not_tuyen','did_not_id','=','not_id')
             ->join('tuyen','not_tuy_id','=','tuy_id')
-            ->where('bvh',$this->ticket)
+            ->where('bvh_id',$this->ticket)
             ->get();
             $params = ['body' => []];
             foreach($data as $row) {
@@ -131,7 +130,6 @@ class pushElasticsJob implements ShouldQueue
         $arrayReturn = array();
 
         $data  = DB::table('bv_loai_dich_vu')->get();
-
         foreach ($data as $key => $value) {
             $id = $value->bvl_id;
             $name = $value->bvl_name;
@@ -154,7 +152,6 @@ class pushElasticsJob implements ShouldQueue
             $dataReturn[$id]['ma']   = $ma;
 
         }
-
         return $dataReturn;
     }
 }
