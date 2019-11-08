@@ -8,7 +8,7 @@ return [
             "port"   => env("ElasticSearch_PORT",9200),
             "scheme" => "http",
             "user"   => "elastic",
-            "pass"   => "changeme"
+            "pass"   => "elastic@elastic@123"
         ]
     ]
 ];

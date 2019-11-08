@@ -118,6 +118,7 @@ class pushElasticsJob implements ShouldQueue
             }
 
             $responses = app('elasticsearch')->bulk($params);
+
             // erase the old bulk request
             $params = ['body' => []];
 
