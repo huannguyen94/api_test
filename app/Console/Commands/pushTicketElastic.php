@@ -48,7 +48,7 @@ class pushTicketElastic extends Command
         ->join('dieu_do_temp','bvv_bvn_id','=','did_id')
         ->join('not_tuyen','did_not_id','=','not_id')
         ->join('tuyen','not_tuy_id','=','tuy_id')
-        ->orderBy('bvv_time_cancel','DESC')->limit(1)->get();
+        ->orderBy('bvv_time_cancel','DESC')->limit(1000)->get();
         $params = ['body' => []];
         foreach($data as $row) {
             $rowTemp = array();
@@ -62,11 +62,11 @@ class pushTicketElastic extends Command
             $rowTemp['ticket_id']                  = $row->bvh_id;
             $rowTemp['ticket_station_id_a']        = $row->bvv_bex_id_a;
             $rowTemp['ticket_station_name_a']      = isset($dataPoint[$row->bvv_bex_id_a]['name']) ? $dataPoint[$row->bvv_bex_id_a]['name'] : '';
-            $rowTemp['ticket_station_key_a']       = isset($dataPoint[$row->bvv_bex_id_a]['ma']) ? $dataPoint[$row->bvv_bex_id_a]['ma'] : '';
+            $rowTemp['ticket_station_code_a']      = isset($dataPoint[$row->bvv_bex_id_a]['ma']) ? $dataPoint[$row->bvv_bex_id_a]['ma'] : '';
             
             $rowTemp['ticket_station_id_b']        = $row->bvv_bex_id_b;
             $rowTemp['ticket_station_name_b']      = isset($dataPoint[$row->bvv_bex_id_b]['name']) ? $dataPoint[$row->bvv_bex_id_b]['name'] : '';
-            $rowTemp['ticket_station_key_b']       = isset($dataPoint[$row->bvv_bex_id_b]['ma']) ? $dataPoint[$row->bvv_bex_id_b]['ma'] : '';
+            $rowTemp['ticket_station_code_b']      = isset($dataPoint[$row->bvv_bex_id_b]['ma']) ? $dataPoint[$row->bvv_bex_id_b]['ma'] : '';
             
             $rowTemp['ticket_type']                = $row->bvv_fast;
             $rowTemp['ticket_type_text']           = isset($arrayTicketType[$row->bvv_fast]) ? $arrayTicketType[$row->bvv_fast] : '';
@@ -89,7 +89,7 @@ class pushTicketElastic extends Command
             $rowTemp['ticket_tranship_b']          = $row->bvv_trung_chuyen_b;
             $rowTemp['trip_id']                    = $row->did_id;
             $rowTemp['trip_service_type']          = $row->did_loai_hinh_ban_ve;
-            $rowTemp['trip_service_type_type']     = isset($dataServiceType[$row->did_loai_hinh_ban_ve]) ? $dataServiceType[$row->did_loai_hinh_ban_ve] : '';
+            $rowTemp['trip_service_type_name']     = isset($dataServiceType[$row->did_loai_hinh_ban_ve]) ? $dataServiceType[$row->did_loai_hinh_ban_ve] : '';
             
             $rowTemp['trip_start_time']            = $row->did_gio_xuat_ben;
             $rowTemp['trip_start_time_real']       = $row->did_gio_xuat_ben_that;
@@ -120,7 +120,7 @@ class pushTicketElastic extends Command
             $row->id     = $row->bvh_id;
             $row->status = 'done';
             $row->time   = date('Y-m-d',$row->did_time).' ' .$row->did_gio_xuat_ben_that;
-            $params['body'][] = $row;
+            $params['body'][] = $rowTemp;
         }
 
         $responses = app('elasticsearch')->bulk($params);

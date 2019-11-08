@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Repositories\Seats\SeatRepository;
 use App\Repositories\Trips\GetTripInfoRepository;
-use Amqp;
+use App\Jobs\pushElasticsJob;
+use Amqp, DB;
 
 
 class WebHookErpController extends Controller
@@ -54,4 +55,24 @@ class WebHookErpController extends Controller
             dd($e);
         }
     }
+    public function elactics( Request $request,$id = 0){
+
+        // $limit = 1;
+        // $arrTicket = DB::table('ban_ve_xuong_xe')
+        // ->select('bvh_id')
+        // ->offset($limit*$id)
+        // ->limit($limit)
+        // ->get();
+        // foreach ($arrTicket as $key => $row) {
+                     
+        //     dispatch(new pushElasticsJob($row->bvh_id))->onQueue('push-data-elastic');
+        // }
+        // dd('done '. count($arrTicket).' index '. $id);
+        // // var_dump($id);
+        // // $id++;
+        // // sleep(5);
+        // // return redirect()->to('/api/elactics/'.$id); 
+    }
+    
+
 }
