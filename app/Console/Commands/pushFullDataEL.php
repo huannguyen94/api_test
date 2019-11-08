@@ -40,6 +40,9 @@ class pushFullDataEL extends Command
     {
         $arrTicket = DB::table('ban_ve_xuong_xe')
         ->select('bvh_id')
+        ->orderby('bvh_id','ASC')
+        ->offset(0)
+                ->limit(500000)
         ->get();
         foreach ($arrTicket as $key => $row) {
                      
