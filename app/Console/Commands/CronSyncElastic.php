@@ -39,7 +39,7 @@ class CronSyncElastic extends Command
     public function handle()
     {       
         $bar = $this->output->createProgressBar(1);
-        die('11');
+
         $bar->start();
         $data = DB::table('ban_ve_xuong_xe')->orderBy('bvv_time_cancel','DESC')->limit(5000)->get();
         $params = ['body' => []];

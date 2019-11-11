@@ -23,6 +23,8 @@ Route::get('/debug-sentry', function () {
 Route::get('test-job','podCastController@testJob');
 
 Route::get('/', function () {
+	echo strtotime(date('d/m/Y', strtotime('+2 months')));
+	dd(strtotime(date("m-d-Y")));
 	dd( phpinfo() );
 //    $arrTrip = DB::table('dieu_do_temp')->select('did_id as trip_id')->where('did_time','>=',time())->get();
 //

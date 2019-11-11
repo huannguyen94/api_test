@@ -28,7 +28,11 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        $schedule->command('command:push-full-data-el')->everyFiveMinutes();
+        if(env('RUN_CRON',0)){
+            $schedule->command('command:push-full-data-el')->dailyAt('00:30');
+            $schedule->command('command:sync-sdg')->dailyAt('00:30');
+        }
+
     }
 
     /**
