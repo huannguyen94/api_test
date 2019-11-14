@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use DB;
 
 class pushUserElastics extends Command
 {
@@ -11,7 +12,7 @@ class pushUserElastics extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'command:push_users_el';
 
     /**
      * The console command description.
