@@ -11,6 +11,7 @@ class GetJourneyRepository
     }
 
     public function getJourney($did_not_option_id,$not_chieu_di,$did_loai_xe,$tuy_id){
+        $dataTemp = array();
         if($did_not_option_id){
             $data = $this->getTimeTripToOption($did_not_option_id,$tuy_id,$did_loai_xe);
 
