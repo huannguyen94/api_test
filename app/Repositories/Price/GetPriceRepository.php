@@ -11,8 +11,18 @@ class GetPriceRepository
     {
         $this->flexiblePriceRepository = $FlexiblePriceRepository;
     }
+
+    public function checkAllGVLH($bvo_id,$loai_so_do){
+        $check = DB::table('so_do_giuong_chi_tiet')
+        ->join('ban_ve_option_sdg','sdgct_id','=','bvog_sdgct_id')
+        ->where('bvog_bvo_id',$bvo_id)
+        ->where('sdgct_sdg_id',$loai_so_do)
+        ->where('bvog_gghg_id',0)->count();
+        return $check;
+    }
  
     public function getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di){
+        $checkGVLH = 1;
 
         if($bvo_id){
             $priceConfig =  $this->flexiblePriceRepository->getPirceMinMax($bvo_id,$loai_so_do,$did_loai_xe);
@@ -27,8 +37,10 @@ class GetPriceRepository
             $tien_giam_chang_max      = $priceConfig['tien_giam_chang_max'];
             $tien_giam_toan_tuyen_max = $priceConfig['tien_giam_toan_tuyen_max'];
             $hinh_thuc                = $priceConfig['hinh_thuc'];
+            $checkGVLH = $this->checkAllGVLH($bvo_id,$loai_so_do);
         }
         
+
 
         $data = $this->getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe);
 
@@ -81,6 +93,10 @@ class GetPriceRepository
             // Note: Khi số tiền or phần trăm cấu hàng càng lớn thì số tiền thực trả lại càng nhỏ và ngược lại
             $priceMax = $price-$priceConfigMinTemp;
             $priceMin = $price-$priceConfigMaxTemp;
+
+            if($checkGVLH && $price  > $priceMax){
+                $priceMax = $price;
+            }
 
             $arrReturn[] = array(
                 'erp_from'          =>$point_a,
