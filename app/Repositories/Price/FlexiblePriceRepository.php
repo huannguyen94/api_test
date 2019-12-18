@@ -28,16 +28,16 @@ class FlexiblePriceRepository
         $dataPriceHangGhe = collect($dataPriceHangGhe)->keyBy('bvop_gghg_id');
         
 
-        $phan_tram_chang_min      = 0;
-        $phan_tram_toan_tuyen_min = 0;
-        $tien_giam_chang_min      = 0;
-        $tien_giam_toan_tuyen_min = 0;
+        $phan_tram_chang_min      = -1;
+        $phan_tram_toan_tuyen_min = -1;
+        $tien_giam_chang_min      = -1;
+        $tien_giam_toan_tuyen_min = -1;
 
         $phan_tram_chang_max      = 0;
         $phan_tram_toan_tuyen_max = 0;
         $tien_giam_chang_max      = 0;
         $tien_giam_toan_tuyen_max = 0;
-
+     
         $hinh_thuc = 0;
         foreach ($dataSDGCT as $key => $value) {
         
@@ -55,7 +55,7 @@ class FlexiblePriceRepository
                 
                 $price_config_phan_tram_toan_tuyen = $data_calculate->bvop_phan_tram_toan_tuyen ;
                 
-                if($phan_tram_toan_tuyen_min == 0 OR $phan_tram_toan_tuyen_min > $price_config_phan_tram_toan_tuyen ){
+                if($phan_tram_toan_tuyen_min == -1 OR $phan_tram_toan_tuyen_min > $price_config_phan_tram_toan_tuyen ){
                     
                     $phan_tram_toan_tuyen_min = $price_config_phan_tram_toan_tuyen;
                 }
@@ -65,7 +65,7 @@ class FlexiblePriceRepository
 
                 $price_config_tuyen = $data_calculate->bvop_toan_tuyen;
                 
-                if($tien_giam_toan_tuyen_min ==0 OR $tien_giam_toan_tuyen_min > $price_config_tuyen ){
+                if($tien_giam_toan_tuyen_min ==-1 OR $tien_giam_toan_tuyen_min > $price_config_tuyen ){
                     $tien_giam_toan_tuyen_min = $price_config_tuyen;
                 }
                 if($tien_giam_toan_tuyen_max < $price_config_tuyen ){
@@ -77,7 +77,7 @@ class FlexiblePriceRepository
                 // xử lý chạng
                 $price_config_phan_tram_chang  = $data_calculate->bvop_phan_tram_chang;
 
-                if($phan_tram_chang_min == 0 OR $phan_tram_chang_min > $price_config_phan_tram_toan_tuyen ){
+                if($phan_tram_chang_min == -1 OR $phan_tram_chang_min > $price_config_phan_tram_toan_tuyen ){
                     $phan_tram_chang_min = $price_config_phan_tram_toan_tuyen;
                 }
                 if($phan_tram_chang_max < $price_config_phan_tram_toan_tuyen ){
@@ -86,7 +86,7 @@ class FlexiblePriceRepository
 
                 $price_config_chang  = $data_calculate->bvop_chang;
 
-                if($tien_giam_chang_min == 0 OR $tien_giam_chang_min > $price_config_chang ){
+                if($tien_giam_chang_min == -1 OR $tien_giam_chang_min > $price_config_chang ){
                     $tien_giam_chang_min = $price_config_chang;
                 }
                 if($tien_giam_chang_max < $price_config_chang ){
@@ -100,7 +100,20 @@ class FlexiblePriceRepository
 
 
         }
-
+        if($phan_tram_chang_min == -1){
+            $phan_tram_chang_min = 0;
+        }
+        
+        if($tien_giam_chang_min == -1){
+            $tien_giam_chang_min = 0;
+        }
+        
+        if($phan_tram_toan_tuyen_min == -1){
+            $phan_tram_toan_tuyen_min = 0;
+        }
+        if($tien_giam_toan_tuyen_min == -1){
+            $tien_giam_toan_tuyen_min = 0;
+        }
         $arrReturn = array(
             'phan_tram_chang_min'      =>$phan_tram_chang_min,
             'phan_tram_toan_tuyen_min' =>$phan_tram_toan_tuyen_min,
@@ -110,7 +123,7 @@ class FlexiblePriceRepository
             'phan_tram_toan_tuyen_max' =>$phan_tram_toan_tuyen_max,
             'tien_giam_chang_max'      =>$tien_giam_chang_max,
             'tien_giam_toan_tuyen_max' =>$tien_giam_toan_tuyen_max,
-            'hinh_thuc'                =>$hinh_thuc,
+            'hinh_thuc'                =>$hinh_thuc, 
         );
         return $arrReturn;       
     }

@@ -3,128 +3,262 @@
 namespace App\Repositories\Price;
 use DB;
 
-class FlexiblePriceRepository 
+use App\Repositories\Price\FlexiblePriceRepository;
+
+class GetPriceRepository 
 {
-    public function __construct()
+    public function __construct(FlexiblePriceRepository $FlexiblePriceRepository)
     {
-        
+        $this->flexiblePriceRepository = $FlexiblePriceRepository;
     }
 
-    public function getPirceMinMax($bvo_id=0, $loai_so_do=0, $did_loai_xe=0 )
-    {
-        $arrReturn  = array();
+    public function checkAllGVLH($bvo_id,$loai_so_do){
+        $check = DB::table('so_do_giuong_chi_tiet')
+        ->join('ban_ve_option_sdg','sdgct_id','=','bvog_sdgct_id')
+        ->where('bvog_bvo_id',$bvo_id)
+        ->where('sdgct_sdg_id',$loai_so_do)
+        ->where('bvog_gghg_id',0)->count();
+        return $check;
+    }
+ 
+    public function getDataPrice($tuy_id,$bvo_id,$loai_so_do,$did_loai_xe,$not_chieu_di){
+        $checkGVLH = 1;
 
-        $dataSDGCT = DB::table('so_do_giuong_chi_tiet')
-                ->select('sdgct_id','bvog_sdgct_id','bvog_bvo_id','sdgct_sdg_id','bvog_gghg_id')
-                ->join('ban_ve_option_sdg','sdgct_id','=','bvog_sdgct_id')
-                ->where('bvog_bvo_id',$bvo_id)
-                ->where('sdgct_sdg_id',$loai_so_do)->get();
+        if($bvo_id){
+            $priceConfig =  $this->flexiblePriceRepository->getPirceMinMax($bvo_id,$loai_so_do,$did_loai_xe);
+            $phan_tram_chang_min      = $priceConfig['phan_tram_chang_min'];
+            $phan_tram_toan_tuyen_min = $priceConfig['phan_tram_toan_tuyen_min'];
+            $tien_giam_chang_min      = $priceConfig['tien_giam_chang_min'];
+            $tien_giam_toan_tuyen_min = $priceConfig['tien_giam_toan_tuyen_min'];
 
-        $dataPriceHangGhe = DB::table('ban_ve_option_price')
-                        ->where('bvop_bvo_id',$bvo_id)
-                        ->where('bvop_bvl_id',$did_loai_xe)->get();
-      
-      
-        $dataPriceHangGhe = collect($dataPriceHangGhe)->keyBy('bvop_gghg_id');
+
+            $phan_tram_chang_max      = $priceConfig['phan_tram_chang_max'];
+            $phan_tram_toan_tuyen_max = $priceConfig['phan_tram_toan_tuyen_max'];
+            $tien_giam_chang_max      = $priceConfig['tien_giam_chang_max'];
+            $tien_giam_toan_tuyen_max = $priceConfig['tien_giam_toan_tuyen_max'];
+            $hinh_thuc                = $priceConfig['hinh_thuc'];
+            $checkGVLH = $this->checkAllGVLH($bvo_id,$loai_so_do);
+        }
         
 
-        $phan_tram_chang_min      = -1;
-        $phan_tram_toan_tuyen_min = -1;
-        $tien_giam_chang_min      = -1;
-        $tien_giam_toan_tuyen_min = -1;
 
-        $phan_tram_chang_max      = 0;
-        $phan_tram_toan_tuyen_max = 0;
-        $tien_giam_chang_max      = 0;
-        $tien_giam_toan_tuyen_max = 0;
-     
-        $hinh_thuc = 0;
-        foreach ($dataSDGCT as $key => $value) {
+        $data = $this->getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe);
+
+        $arrDataDiem = $this->getToanTuyenOrChang($tuy_id);
+
+        $arrDiem1 = $arrDataDiem['arrDiem1'];
+        $arrDiem2 = $arrDataDiem['arrDiem2'];
         
-            $price_config_phan_tram_toan_tuyen = 0;
-            $price_config_tuyen                = 0;
-            $price_config_phan_tram_chang      = 0;
-            $price_config_chang                = 0;
+        $arrReturn = array();
+        foreach ($data as $key => $value) {
+            $point_a  = $value['point_a'];
+            $point_b  = $value['point_b'];
+            $price    = $value['price'];
+            $priceConfigMinTemp = 0;
+            $priceConfigMaxTemp = 0;
 
-            $hang_ghe_id = $value->bvog_gghg_id;
+            $priceMin = $priceMax = $price;
 
-            if($hang_ghe_id != 0){
-
-                $data_calculate = $dataPriceHangGhe[$hang_ghe_id];
-                // Xử lý toàn tuyến
-                
-                $price_config_phan_tram_toan_tuyen = $data_calculate->bvop_phan_tram_toan_tuyen ;
-                
-                if($phan_tram_toan_tuyen_min == -1 OR $phan_tram_toan_tuyen_min > $price_config_phan_tram_toan_tuyen ){
-                    
-                    $phan_tram_toan_tuyen_min = $price_config_phan_tram_toan_tuyen;
-                }
-                if($phan_tram_toan_tuyen_max < $price_config_phan_tram_toan_tuyen ){
-                    $phan_tram_toan_tuyen_max = $price_config_phan_tram_toan_tuyen;
-                }
-
-                $price_config_tuyen = $data_calculate->bvop_toan_tuyen;
-                
-                if($tien_giam_toan_tuyen_min ==-1 OR $tien_giam_toan_tuyen_min > $price_config_tuyen ){
-                    $tien_giam_toan_tuyen_min = $price_config_tuyen;
-                }
-                if($tien_giam_toan_tuyen_max < $price_config_tuyen ){
-                    $tien_giam_toan_tuyen_max = $price_config_tuyen;
-                }
-
-                
-
-                // xử lý chạng
-                $price_config_phan_tram_chang  = $data_calculate->bvop_phan_tram_chang;
-
-                if($phan_tram_chang_min == -1 OR $phan_tram_chang_min > $price_config_phan_tram_toan_tuyen ){
-                    $phan_tram_chang_min = $price_config_phan_tram_toan_tuyen;
-                }
-                if($phan_tram_chang_max < $price_config_phan_tram_toan_tuyen ){
-                    $phan_tram_chang_max = $price_config_phan_tram_toan_tuyen;
-                }
-
-                $price_config_chang  = $data_calculate->bvop_chang;
-
-                if($tien_giam_chang_min == -1 OR $tien_giam_chang_min > $price_config_chang ){
-                    $tien_giam_chang_min = $price_config_chang;
-                }
-                if($tien_giam_chang_max < $price_config_chang ){
-                    $tien_giam_chang_max = $price_config_chang;
-                }
-
-                $hinh_thuc = $data_calculate->bvop_hinh_thuc;
-
-
+            $is_full = false;
+            if( in_array($point_a,$arrDiem1) && in_array($point_b,$arrDiem2) ){
+                $is_full =  true;
+            }else if( in_array($point_a,$arrDiem2) && in_array($point_b,$arrDiem1) ){
+                $is_full =  true;
             }
 
 
+            if($bvo_id){
+                if($is_full){
+
+                    if($hinh_thuc == 1){
+                        $priceConfigMinTemp = intval(ceil((($phan_tram_toan_tuyen_min / 100) * $price) / 5000) * 5000);
+                        $priceConfigMaxTemp = intval(ceil((($phan_tram_toan_tuyen_max / 100) * $price) / 5000) * 5000);
+                    }else{
+                        $priceConfigMinTemp = $tien_giam_toan_tuyen_min;
+                        $priceConfigMaxTemp = $tien_giam_toan_tuyen_max;
+                    }
+                }else{
+
+                    if($hinh_thuc == 1){
+                        $priceConfigMinTemp  = intval(ceil((($phan_tram_chang_min / 100) * $price) / 5000) * 5000);
+                        $priceConfigMaxTemp  = intval(ceil((($phan_tram_chang_max / 100) * $price) / 5000) * 5000);
+                    }else{
+                        $priceConfigMinTemp  = $tien_giam_chang_min;
+                        $priceConfigMaxTemp  = $tien_giam_chang_max;
+                    }
+                }
+            }
+            
+
+            // Note: Khi số tiền or phần trăm cấu hàng càng lớn thì số tiền thực trả lại càng nhỏ và ngược lại
+            $priceMax = $price-$priceConfigMinTemp;
+            $priceMin = $price-$priceConfigMaxTemp;
+
+            if($checkGVLH && $price  > $priceMax){
+                $priceMax = $price;
+            }
+
+            $arrReturn[] = array(
+                'erp_from'          =>$point_a,
+                'erp_to'            =>$point_b,
+                'erp_time_run_from' =>0,
+                'erp_time_run_to'   =>0,
+                'erp_base_price'    =>$price,
+                'erp_min_price'     =>$priceMin,
+                'erp_max_price'     =>$priceMax,
+
+            );
         }
-        if($phan_tram_chang_min == -1){
-            $phan_tram_chang_min = 0;
-        }
-        
-        if($tien_giam_chang_min == -1){
-            $tien_giam_chang_min = 0;
-        }
-        
-        if($phan_tram_toan_tuyen_min == -1){
-            $phan_tram_toan_tuyen_min = 0;
-        }
-        if($tien_giam_toan_tuyen_min == -1){
-            $tien_giam_toan_tuyen_min = 0;
-        }
-        $arrReturn = array(
-            'phan_tram_chang_min'      =>$phan_tram_chang_min,
-            'phan_tram_toan_tuyen_min' =>$phan_tram_toan_tuyen_min,
-            'tien_giam_chang_min'      =>$tien_giam_chang_min,
-            'tien_giam_toan_tuyen_min' =>$tien_giam_toan_tuyen_min,
-            'phan_tram_chang_max'      =>$phan_tram_chang_max,
-            'phan_tram_toan_tuyen_max' =>$phan_tram_toan_tuyen_max,
-            'tien_giam_chang_max'      =>$tien_giam_chang_max,
-            'tien_giam_toan_tuyen_max' =>$tien_giam_toan_tuyen_max,
-            'hinh_thuc'                =>$hinh_thuc, 
-        );
-        return $arrReturn;       
+        return $arrReturn;
+
     }
+
+    public function getPrice($tuy_id,$did_loai_xe){
+       
+        $dataGiaVe     = DB::table('ban_ve_gia')
+        ->select('bvg_type','bvg_tuyen_id','bvg_bex_id_a','bvg_bex_id_b','bvg_bvd_id')
+        ->where('bvg_type',$did_loai_xe)
+        ->where('bvg_tuyen_id',$tuy_id)->get();
+        $arrReturn     = array();
+
+        foreach ($dataGiaVe as $key => $value) {
+            $point_a = $value->bvg_bex_id_a;
+            $point_b = $value->bvg_bex_id_b;
+            $price   = $value->bvg_bvd_id;
+
+            $arrReturn[$point_a][$point_b] = $price;
+            $arrReturn[$point_b][$point_a] = $price;
+
+        }
+        return $arrReturn;
+    }
+    public function getPriceChild($tuy_id,$not_chieu_di,$did_loai_xe){
+
+        $dataPrice   = $this->getPrice($tuy_id,$did_loai_xe);
+        $orderBy = 'ASC';
+        if($not_chieu_di == 2){
+            $orderBy = 'DESC';
+        }
+        // $arrParent = $this->getPointParent();
+        $data = DB::table('tuyen_diem_don_tra_khach')
+                ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_tuyen_id','bex_kinh_doanh','bex_parent_id')
+                ->JOIN('ben_xe','bex_id','=','tdd_bex_id')->where('tdd_tuyen_id',$tuy_id)
+                ->orderBy('tdd_order',$orderBy)->get();
+        $arrReturn = array();
+        $totalRow   = 0;
+        foreach ($data as $key => $value) {
+            $totalRow++;
+            $point_a        = $value->bex_id;
+            $bex_kinh_doanh = $value->bex_kinh_doanh;
+            $bex_parent_id  = $value->bex_parent_id;
+            if($bex_kinh_doanh ==0 && $bex_parent_id > 0){
+                $point_a_temp = $bex_parent_id;
+                
+            }else{
+                $point_a_temp = $point_a;
+            }
+            $count   = 0;
+            foreach ($data as $key1 => $value1) {
+                $count++;
+                if($totalRow <= $count){
+                    $point_b         = $value1->bex_id;
+                    $bex_kinh_doanh1 = $value1->bex_kinh_doanh;
+                    $bex_parent_id1  = $value1->bex_parent_id;
+                    if($bex_kinh_doanh1 ==0 && $bex_parent_id1 > 0){
+                        $point_b_temp = $bex_parent_id1;
+                    }else{
+                        $point_b_temp = $point_b;
+                    }
+
+                    $price = isset($dataPrice[$point_a_temp][$point_b_temp]) ? $dataPrice[$point_a_temp][$point_b_temp] : 0;
+                    $arrReturn[] = array(
+                        'point_a' =>$point_a,
+                        'point_b' =>$point_b,
+                        'price'   => $price,
+                    );
+                }
+                
+            }
+        }
+
+
+
+        // while(count($data) > 1) {
+        //     $first = array_shift($data);
+
+        //     foreach($data as $item) {
+        //         $price = isset($dataPrice[$point_a_temp][$point_b_temp]) ? $dataPrice[$point_a_temp][$point_b_temp] : 0;
+        //         $arrReturn[] = [
+        //             'from' => $first,
+        //             'to' => $item,
+        //             'point_a' =>$first,
+        //             'point_b' =>$item,
+        //             'price'   => $price,
+        //         ];
+        //     }
+        // }
+
+        return $arrReturn;
+
+    }
+    // public function getPointParent(){
+    //     $arrReturn = array();
+    //     $data = DB::table('ben_xe')->where('bex_kinh_doanh',1)->where('bex_parent_id','>',0)->get();
+
+    //     foreach ($data as $key => $value) {
+    //         $arrReturn[$value->bex_parent_id] = $value->bex_id;
+    //     }
+        
+    //     return $arrReturn;
+
+    // }
+    function getToanTuyenOrChang($tuy_id) 
+    {
+        // true: toàn tuyến, false: chặng
+
+        $dataBV  = DB::table('tuyen_diem_don_tra_khach')
+            ->select('bex_id','tdd_bex_id','tdd_tuyen_id','tdd_order','bex_kinh_doanh','bex_parent_id')
+            ->join('ben_xe','bex_id','=','tdd_bex_id')
+            ->where('tdd_tuyen_id',$tuy_id)
+            ->orderBy('tdd_order','ASC')->get();
+        $diem_ban_1 = 0;
+        $diem_ban_2 = 0;
+        $arrDiem1   = array();
+        $arrDiem2   = array();
+
+        $dataBV = collect($dataBV);
+        foreach ($dataBV as $key => $value) {
+            $bex_id  = $value->bex_id;
+
+            if($value->bex_kinh_doanh == 1 && $diem_ban_1 == 0){
+               $diem_ban_1 = $bex_id;
+            }
+            if($value->bex_kinh_doanh == 1){
+               $diem_ban_2 = $bex_id;
+            }
+        }
+
+        $arrDiem1[$diem_ban_1]  = $diem_ban_1;
+        $arrDiem2[$diem_ban_2]  = $diem_ban_2;
+
+
+        foreach($dataBV as $keyBV => $rowBV){
+            $bex_id  = $rowBV->bex_id;
+            $bex_parent_id = $rowBV->bex_parent_id;
+            if($diem_ban_1 > 0 && $bex_parent_id == $diem_ban_1){
+                $arrDiem1[$bex_id]  = $bex_id;
+            }
+            if($diem_ban_2 > 0 && $bex_parent_id == $diem_ban_2){
+                $arrDiem2[$bex_id]  = $bex_id;      
+            }
+        }
+     
+        $arrayReturn = array(
+            'arrDiem1' => $arrDiem1,
+            'arrDiem2' => $arrDiem2,
+        );
+        return $arrayReturn;
+    }
+
+    
 }
