@@ -123,7 +123,7 @@ class FlexiblePriceRepository
             'phan_tram_toan_tuyen_max' =>$phan_tram_toan_tuyen_max,
             'tien_giam_chang_max'      =>$tien_giam_chang_max,
             'tien_giam_toan_tuyen_max' =>$tien_giam_toan_tuyen_max,
-            'hinh_thuc'                =>$hinh_thuc,
+            'hinh_thuc'                =>$hinh_thuc, 
         );
         return $arrReturn;       
     }
