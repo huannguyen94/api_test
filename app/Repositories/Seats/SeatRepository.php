@@ -54,11 +54,10 @@ class SeatRepository
         ->where('did_id',$trip_id)->first();
 
         if(is_null($data)){
-            throw new \Exception('Không tìm thấy thông tin data với Trip id = '.$trip_id);
+            return 'Không tìm thấy thông tin data với Trip id = '.$trip_id;
         }
         if(is_null($data->did_gio_xuat_ben_that) OR $data->did_gio_xuat_ben_that ==''){
-            throw new \Exception('Không tồn tại thời gian xuất bến với Trip id = '.$trip_id);
-            return 0;
+            return 'Không tồn tại thời gian xuất bến với Trip id = '.$trip_id;
         }
         $sdg_khoa_ban_ve_str  = $data->sdg_khoa_ban_ve;
         $sdg_khoa_ban_ve = explode(',',$sdg_khoa_ban_ve_str);
