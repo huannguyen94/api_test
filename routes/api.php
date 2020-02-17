@@ -14,23 +14,7 @@ use Illuminate\Http\Request;
 */
 
 
-
-
 Route::group(['namespace'=>'Api'],function(){
-
-	
-    Route::get('test/{id}','WebHookErpController@webHookErp');
-    Route::get('seat/{id}','WebHookErpController@veTrong');
-    Route::get('sync-sdg','WebHookErpController@syncSDG');
-    Route::get('elactics/{id}','WebHookErpController@elactics');
-
-
-	Route::group(['middleware' => ['apiToken'] ], function () {
-		Route::get('/rule','ApiTestController@testApi')->name('aaaaa');
-	});
+	Route::get('test','ApiTestController@testApi');
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-
-    return $request->user();
-});
