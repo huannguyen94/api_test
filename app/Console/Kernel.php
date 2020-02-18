@@ -13,8 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        \App\Console\Commands\SyncElastic::class,
-        \App\Console\Commands\CronSyncElastic::class
+       
     ];
 
     /**
@@ -28,10 +27,6 @@ class Kernel extends ConsoleKernel
         // $schedule->command('inspire')
         //          ->hourly();
 
-        if(env('RUN_CRON')){
-            $schedule->command('command:push-full-data-el')->dailyAt('03:00');
-            $schedule->command('command:sync-sdg')->dailyAt('03:00');
-        }
 
     }
 
