@@ -20,9 +20,9 @@ Route::group(['namespace'=>'Api'],function(){
 	Route::group(['prefix' => 'quanlyca'], function () {
 		Route::get('test3','ApiTestController@testApi');
 	});
-	Route::group(['prefix' => 'quanlyuser'], function () {
-		Route::get('user','UserController@getListingUser');
-		Route::put('put_user','UserController@putUser');
+	Route::group(['prefix' => 'quanlystaff'], function () {
+		Route::get('staff','UserController@getListingStaff');
+		Route::put('put_staff','UserController@putStaff');
 	});
 	
 	Route::get('branch','UserController@getListingBranch');

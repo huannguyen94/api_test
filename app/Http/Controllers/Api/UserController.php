@@ -9,7 +9,7 @@ use DB;
 
 class UserController extends Controller
 {
-    public function getListingUser (Request $request)
+    public function getListingStaff (Request $request)
     {
     	$limit = isset($request->limit) ? intval($request->limit) : 50;
         if($limit > 100) {
@@ -28,19 +28,17 @@ class UserController extends Controller
 
     	foreach ($data_user as $key => $value) {
 	    	$response[] = [	
-	    		"user"=>[
-					"id"           => $value->adm_id,
-					"name"         => $value->adm_name,
-					"phone"        => $value->adm_phone,
-					"noi_lam_viec" => isset($chi_nhanh[$value->adm_noi_lam_viec]) ? $chi_nhanh[$value->adm_noi_lam_viec] : "",
-					"vp_kt"        => ''
-	    		]
+				"id"           => $value->adm_id,
+				"name"         => $value->adm_name,
+				"phone"        => $value->adm_phone,
+				"noi_lam_viec" => isset($chi_nhanh[$value->adm_noi_lam_viec]) ? $chi_nhanh[$value->adm_noi_lam_viec] : "",
+				"vp_kt"        => ''
 	    	];
     	}
         return response()->json($response);
     }
 
-    public function putUser(Request $request)
+    public function putStaff(Request $request)
     {
     	$update = [
 			"adm_id"           => $request->adm_id,
@@ -64,7 +62,7 @@ class UserController extends Controller
 
         $page = isset($request->page) ? intval($request->page) : '';
 
-		$data_branch      = DB::table('chi_nhanh')->paginate($limit);
+		$data_branch = DB::table('chi_nhanh')->paginate($limit);
 
 		$chi_nhanh_cha = [];
 		foreach ($data_branch as $key => $value1) {
@@ -73,13 +71,12 @@ class UserController extends Controller
 
     	foreach ($data_branch as $key => $value) {
 	    	$response[] = [	
-	    		"branch"=>[
-					"id"      => $value->cn_id,
-					"cn_cha"  => isset($chi_nhanh_cha[$value->cn_parent_id]) ? $chi_nhanh_cha[$value->cn_parent_id] : "",
-					"name"    => $value->cn_name,
-					"ma"      => $value->cn_code,
-					"dia_chi" => $value->cn_address,
-	    		]
+				"id"      => $value->cn_id,
+				"cn_cha"  => isset($chi_nhanh_cha[$value->cn_parent_id]) ? $chi_nhanh_cha[$value->cn_parent_id] : "",
+				"name"    => $value->cn_name,
+				"ma"      => $value->cn_code,
+				"dia_chi" => $value->cn_address,
+	    		
 	    	];
     	}
         return response()->json($response);
