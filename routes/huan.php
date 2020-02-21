@@ -19,10 +19,11 @@ use Illuminate\Http\Request;
 Route::group(['namespace'=>'Api'],function(){
 	Route::group(['prefix' => 'quanlyca'], function () {
 		Route::get('test3','ApiTestController@testApi');
-
-		
 	});
-
+	Route::group(['prefix' => 'quanlyuser'], function () {
+		Route::get('user','UserController@getListingUser');
+	});
+	
 });
 
 
