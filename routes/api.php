@@ -13,6 +13,9 @@ use Illuminate\Http\Request;
 |
 */
 
+require (__DIR__ . '/huan.php');
+require (__DIR__ . '/hieu.php');
+require (__DIR__ . '/long.php');
 
 
 Route::group(['namespace'=>'Api'],function(){
@@ -22,8 +25,26 @@ Route::group(['namespace'=>'Api'],function(){
 		Route::post('logout','AuthController@logout');
 	});
 
-	Route::group(['prefix' => 'quanlyca'], function () {
-		Route::get('test','ApiTestController@testApi');
+	
+	/****************GET TRANG THAI LENH CONFIG ************************/ 
+	Route::get('lenhconfig','QuanLyLenhController@getTrangThaiLenhConfig');
+	
+	Route::group(['prefix' => 'dieudo'],function(){
+		Route::group(['prefix' => 'lenh'],function(){
+			/****************GET MA LENH  ************************/ 
+			Route::get('malenh','QuanLyLenhController@getMaLenh');
+
+			/****************SEARCH MA LENH  ************************/ 
+			Route::post('timkiem','QuanLyLenhController@searchMaLenh');
+
+			/****************GET THONG TIN CHI TIET MA LENH  ************************/ 
+			Route::get('chitiet/{malenh}','QuanLyLenhController@getThongTinMaLenh');
+		});
+
+			/****************LAY DANH SACH KHACH DANG DON ************************/ 
+			Route::group(['prefix' =>'tcd'],function(){
+				Route::get('dskhachdangdon/{malenh}','QuanLyLenhController@getListKhachDangDon');
+			});
 	});
 
     Route::group(['prefix' => 'quanlyca'], function () {
@@ -41,6 +62,5 @@ Route::group(['namespace'=>'Api'],function(){
 
 });
 
-	
 
 
