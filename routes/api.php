@@ -17,6 +17,8 @@ use Illuminate\Http\Request;
 Route::group(['namespace'=>'Api'],function(){
 	Route::group(['prefix' => 'quanlyca'], function () {
 		Route::get('test','ApiTestController@testApi');
+
+		
 	});
 
 
@@ -45,13 +47,4 @@ Route::group(['namespace'=>'Api'],function(){
 				Route::get('dskhachdangdon/{malenh}','QuanLyLenhController@getListKhachDangDon');
 			});
 	});
-});
-
-
-
-
-
-
-Route::get('/',function(){
-
 });
