@@ -28,9 +28,6 @@ Route::group(['namespace'=>'Api'],function(){
 	});
 
 
-
-
-
 	/****************GET TRANG THAI LENH CONFIG ************************/ 
 	Route::get('lenhconfig','QuanLyLenhController@getTrangThaiLenhConfig');
 	
