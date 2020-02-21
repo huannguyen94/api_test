@@ -14,6 +14,7 @@ use Illuminate\Http\Request;
 */
 
 
+
 Route::group(['namespace'=>'Api'],function(){
 
 	Route::group(['prefix' => 'auth'], function () {
@@ -24,5 +25,17 @@ Route::group(['namespace'=>'Api'],function(){
 	Route::group(['prefix' => 'quanlyca'], function () {
 		Route::get('test','ApiTestController@testApi');
 	});
-});
 
+    Route::group(['prefix' => 'quanlyca'], function () {
+        Route::get('test', 'ApiTestController@testApi');
+    });
+    Route::group(['prefix'=>'catruc'], function () {
+		// ------------- tìm kiếm ca------------
+		Route::post('search', 'QuanlycaController@timKiemCa');
+		// ------------- cập nhật ca------------
+		Route::post('update', 'QuanlycaController@capNhatCa');
+		// ------------- tạo mới ca------------
+        Route::post('createnew', 'QuanlycaController@taoMoiCa');
+    });
+
+});
