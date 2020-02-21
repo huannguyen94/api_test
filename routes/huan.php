@@ -22,7 +22,10 @@ Route::group(['namespace'=>'Api'],function(){
 	});
 	Route::group(['prefix' => 'quanlyuser'], function () {
 		Route::get('user','UserController@getListingUser');
+		Route::put('put_user','UserController@putUser');
 	});
+	
+	Route::get('branch','UserController@getListingBranch');
 	
 });
 
