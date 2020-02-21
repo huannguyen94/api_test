@@ -38,4 +38,9 @@ Route::group(['namespace'=>'Api'],function(){
         Route::post('createnew', 'QuanlycaController@taoMoiCa');
     });
 
+
 });
+
+	
+
+
