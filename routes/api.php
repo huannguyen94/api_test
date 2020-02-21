@@ -23,13 +23,13 @@ Route::group(['namespace'=>'Api'],function(){
 
 	Route::group(['prefix' => 'quanlyca'], function () {
 		Route::get('test','ApiTestController@testApi');
+
+		
 	});
 
 
-	/****************GET DANH SACH TAI XE ************************/ 
-	Route::group(['prefix' => 'lichtruc'],function(){
-		Route::get('danhsachtaixe','QuanLyLenhController@getLaiXeList');
-	});
+
+
 
 	/****************GET TRANG THAI LENH CONFIG ************************/ 
 	Route::get('lenhconfig','QuanLyLenhController@getTrangThaiLenhConfig');
@@ -55,9 +55,3 @@ Route::group(['namespace'=>'Api'],function(){
 
 
 
-
-
-
-Route::get('/',function(){
-
-});
