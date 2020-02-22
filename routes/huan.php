@@ -26,6 +26,8 @@ Route::group(['namespace'=>'Api'],function(){
 	});
 	
 	Route::get('branch','UserController@getListingBranch');
+	Route::get('xe_tc','XeTCController@getListingXeTC');
+	Route::put('put_xe_tc','XeTCController@putXeTC');
 	
 });
 

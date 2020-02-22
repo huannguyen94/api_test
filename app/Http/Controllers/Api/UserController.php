@@ -11,14 +11,17 @@ class UserController extends Controller
 {
     public function getListingStaff (Request $request)
     {
-    	$limit = isset($request->limit) ? intval($request->limit) : 50;
-        if($limit > 100) {
-            $limit = 100;
-        }
+        $limit = (int) $request->get('limit',50);
+        $page = (int) $request->get('page',0);
 
-        $page = isset($request->page) ? intval($request->page) : '';
+		$data_user  = DB::table('admin_lv2_user')->where('adm_group_id',2)->orwhere('adm_group_id',4)
+					->where([
+						['adm_name','like','%'.$request['name'].'%'],
+						['adm_ma','like','%'.$request['ma']],
+						['adm_phone','like','%'.$request['phone']],
+						['adm_noi_lam_viec','like','%'.$request['noi_lam_viec'].'%'],
+    				])->paginate($limit);
 
-		$data_user      = DB::table('admin_lv2_user')->where('adm_group_id',2)->paginate($limit);
 		$data_chi_nhanh = DB::table('chi_nhanh')->get();
 
 		$chi_nhanh = [];
@@ -30,9 +33,11 @@ class UserController extends Controller
 	    	$response[] = [	
 				"id"           => $value->adm_id,
 				"name"         => $value->adm_name,
+				"ma"           => $value->adm_ma,
 				"phone"        => $value->adm_phone,
+				"id_nlv"       => $value->adm_noi_lam_viec,
 				"noi_lam_viec" => isset($chi_nhanh[$value->adm_noi_lam_viec]) ? $chi_nhanh[$value->adm_noi_lam_viec] : "",
-				"vp_kt"        => ''
+				"vp_kt"        => $value->adm_vp_kiem_nghiem
 	    	];
     	}
         return response()->json($response);
@@ -40,14 +45,14 @@ class UserController extends Controller
 
     public function putStaff(Request $request)
     {
+    	$id = $request->adm_id;
     	$update = [
-			"adm_id"           => $request->adm_id,
-			"adm_name"         => $request->adm_name,
-			"adm_phone"        => $request->adm_phone,
-			"adm_noi_lam_viec" => $request->adm_noi_lam_viec,
+			"adm_id"             => $request->adm_id,
+			"adm_noi_lam_viec"   => $request->adm_noi_lam_viec,
+			"adm_vp_kiem_nghiem" => $request->adm_vp_kiem_nghiem,
 		];
 
-    	$data= DB::table('admin_lv2_user')->where('adm_id',$request->adm_id)->update($update);
+    	$data= DB::table('admin_lv2_user')->where('adm_id',$id)->update($update);
     	
     	return $data;
     }
@@ -55,12 +60,8 @@ class UserController extends Controller
 
     public function getListingBranch (Request $request)
     {
-    	$limit = isset($request->limit) ? intval($request->limit) : 50;
-        if($limit > 100) {
-            $limit = 100;
-        }
-
-        $page = isset($request->page) ? intval($request->page) : '';
+    	$limit = (int) $request->get('limit',50);
+        $page = (int) $request->get('page',0);
 
 		$data_branch = DB::table('chi_nhanh')->paginate($limit);
 
