@@ -14,7 +14,9 @@ class XeTCController extends Controller
     	$limit = (int) $request->get('limit',50);
     	$page = (int) $request->get('page',50);
 
-    	$data_xe_tc = DB::table('xe')->get();
+    	$data_xe_tc = DB::table('xe')->where('xe_trung_tam',4)->where('xe_status',1)
+                    ->where([['xe_bien_kiem_soat','like','%'.$request['xe_bien_kiem_soat'].'%'],])
+                    ->paginate($limit);
 
     	foreach($data_xe_tc as $key => $value){
     		$response[] = [
