@@ -47,11 +47,9 @@ class UserController extends Controller
     {
     	$id = $request->adm_id;
     	$update = [
-			"adm_id"             => $request->adm_id,
-			"adm_noi_lam_viec"   => $request->adm_noi_lam_viec,
+			"adm_noi_lam_viec"   => (int) $request->adm_noi_lam_viec,
 			"adm_vp_kiem_nghiem" => $request->adm_vp_kiem_nghiem,
 		];
-
     	$data= DB::table('admin_lv2_user')->where('adm_id',$id)->update($update);
     	
     	return $data;
