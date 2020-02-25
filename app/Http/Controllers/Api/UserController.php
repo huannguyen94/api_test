@@ -50,8 +50,9 @@ class UserController extends Controller
 			"adm_noi_lam_viec"   => (int) $request->adm_noi_lam_viec,
 			"adm_vp_kiem_nghiem" => $request->adm_vp_kiem_nghiem,
 		];
-    	$data= DB::table('admin_lv2_user')->where('adm_id',$id)->update($update);
-    	
+    	DB::table('admin_lv2_user')->where('adm_id',$id)->update($update);
+
+    	$data = DB::table('admin_lv2_user')->where('adm_id',$id)->first();
     	return $data;
     }
 
