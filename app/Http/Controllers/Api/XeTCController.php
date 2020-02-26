@@ -37,7 +37,7 @@ class XeTCController extends Controller
 
     public function putXeTC (Request $request)
     {
-    	$id = $request->adm_id;
+    	$id = $request->xe_id;
     	$update = [
 			"xe_vung_hoat_dong_id" => $request->xe_vung_hoat_dong_id,
 		];
