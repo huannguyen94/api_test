@@ -45,6 +45,6 @@ class XeTCController extends Controller
     	DB::table('xe')->where('xe_id',$id)->update($update);
         $data = DB::table('xe')->where('xe_id',$id)->first();
     	
-    	return $data;
+    	return response()->json($data);
     }
 }
