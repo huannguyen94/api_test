@@ -29,7 +29,7 @@ class XeTCController extends Controller
 				// "loai_so_do_giuong" => $value->xe_loai_so_do_giuong,
 				// "nhom_xe"           => $value->xe_nhom_id,
 				// "hang_xe"           => $value->xe_hang,
-				"vung_hoat_dong"    => $value->xe_vung_hoat_dong_id,
+				"xe_vung_hoat_dong_id"    => $value->xe_vung_hoat_dong_id,
     		];
     	}
         return response()->json($response);
@@ -39,7 +39,7 @@ class XeTCController extends Controller
     {
     	$id = $request->adm_id;
     	$update = [
-			"vung_hoat_dong" => $request->xe_vung_hoat_dong_id,
+			"xe_vung_hoat_dong_id" => $request->xe_vung_hoat_dong_id,
 		];
 
     	DB::table('xe')->where('xe_id',$id)->update($update);
