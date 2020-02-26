@@ -39,11 +39,11 @@ class XeTCController extends Controller
     {
     	$id = $request->adm_id;
     	$update = [
-			"xe_id"          => $request->xe_id,
 			"vung_hoat_dong" => $request->xe_vung_hoat_dong_id,
 		];
 
-    	$data= DB::table('xe')->where('xe_id',$id)->update($update);
+    	DB::table('xe')->where('xe_id',$id)->update($update);
+        $data = DB::table('xe')->where('xe_id',$id)->first();
     	
     	return $data;
     }
